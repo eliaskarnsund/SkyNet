@@ -2,7 +2,6 @@ package com.network.skynet;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.net.wifi.p2p.WifiP2pManager;
@@ -20,7 +19,7 @@ public class MainActivity extends Activity {
 
 	private WifiP2pManager mManager;
 	private Channel mChannel;
-	private BroadcastReceiver mReceiver;
+	private NetworkHandler mReceiver;
 	IntentFilter mIntentFilter;
 
 	@Override
@@ -63,6 +62,12 @@ public class MainActivity extends Activity {
 		mIntentFilter
 				.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
 
+	}
+
+	public void searchNodes(View view) {
+		mReceiver.discover();
+		// Toast.makeText(getApplicationContext(), "YES", Toast.LENGTH_SHORT)
+		// .show();
 	}
 
 	@Override

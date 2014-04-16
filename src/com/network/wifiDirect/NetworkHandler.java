@@ -2,7 +2,6 @@ package com.network.wifiDirect;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -35,7 +34,11 @@ public class NetworkHandler extends BroadcastReceiver {
 
 	}
 
-	private void setupActionlistener() {
+	public void discover() {
+		mManager.discoverPeers(mChannel, actionListener);
+	}
+
+	public void setupActionlistener() {
 
 		actionListener = new Actionlistener(mActivity);
 
@@ -46,7 +49,8 @@ public class NetworkHandler extends BroadcastReceiver {
 				mManager.discoverPeers(mChannel, actionListener);
 			}
 		};
-		worker.schedule(task, 10, TimeUnit.SECONDS);
+		// worker.schedule(task, 5, TimeUnit.SECONDS);
+		// worker.schedule(task, 10, TimeUnit.SECONDS);
 		// TODO Schedule this action (?)
 		// mManager.discoverPeers(mChannel, actionListener);
 
@@ -67,6 +71,7 @@ public class NetworkHandler extends BroadcastReceiver {
 			if (mManager != null) {
 				mManager.requestPeers(mChannel, myPeerListListener);
 			}
+			makeToast("HELLO HELLO");
 
 		} else if (WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION
 				.equals(action)) {

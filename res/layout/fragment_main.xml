@@ -9,8 +9,20 @@
     tools:context="com.network.skynet.MainActivity$PlaceholderFragment" >
 
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/textView1"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
         android:text="@string/hello_world" />
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/textView1"
+        android:layout_below="@+id/textView1"
+        android:onClick="searchNodes"
+        android:text="@string/discoverButton" >
+    </Button>
 
 </RelativeLayout>

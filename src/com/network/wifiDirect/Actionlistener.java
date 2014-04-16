@@ -16,19 +16,20 @@ public class Actionlistener implements WifiP2pManager.ActionListener {
 	@Override
 	public void onFailure(int reason) {
 		// TODO Auto-generated method stub
+		makeToast("No peers found. Reason=" + String.valueOf(reason));
+
+	}
+
+	@Override
+	public void onSuccess() {
+
+		// TODO Auto-generated method stub
 		// notifies that the discovery process succeeded and does
 		// not provide any information about the actual peers that it
 		// discovered
 		// the system broadcasts the WIFI_P2P_PEERS_CHANGED_ACTION
 		// intent
 		makeToast("Peers found");
-
-	}
-
-	@Override
-	public void onSuccess() {
-		// TODO Auto-generated method stub
-		makeToast("No peers found");
 
 	}
 
