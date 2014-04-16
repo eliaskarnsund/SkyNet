@@ -1,14 +1,16 @@
 package com.network.wifiDirect;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
+import java.util.Collection;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.net.wifi.p2p.WifiP2pDevice;
+import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.net.wifi.p2p.WifiP2pManager.PeerListListener;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.network.skynet.MainActivity;
@@ -21,8 +23,6 @@ public class NetworkHandler extends BroadcastReceiver {
 	private final MainActivity mActivity;
 	private WifiP2pManager.ActionListener actionListener;
 	private PeerListListener myPeerListListener;
-	private static final ScheduledExecutorService worker = Executors
-			.newSingleThreadScheduledExecutor();
 
 	public NetworkHandler(WifiP2pManager manager, Channel channel,
 			MainActivity activity) {
@@ -31,6 +31,7 @@ public class NetworkHandler extends BroadcastReceiver {
 		this.mChannel = channel;
 		this.mActivity = activity;
 		setupActionlistener();
+		myPeerListListener = new Peerlistener(mActivity);
 
 	}
 
@@ -39,21 +40,7 @@ public class NetworkHandler extends BroadcastReceiver {
 	}
 
 	public void setupActionlistener() {
-
 		actionListener = new Actionlistener(mActivity);
-
-		// TODO Test only, remove later
-		Runnable task = new Runnable() {
-			@Override
-			public void run() {
-				mManager.discoverPeers(mChannel, actionListener);
-			}
-		};
-		// worker.schedule(task, 5, TimeUnit.SECONDS);
-		// worker.schedule(task, 10, TimeUnit.SECONDS);
-		// TODO Schedule this action (?)
-		// mManager.discoverPeers(mChannel, actionListener);
-
 	}
 
 	@Override
@@ -70,8 +57,8 @@ public class NetworkHandler extends BroadcastReceiver {
 			// callback on PeerListListener.onPeersAvailable()
 			if (mManager != null) {
 				mManager.requestPeers(mChannel, myPeerListListener);
+				makeToast("List of peers retrieved");
 			}
-			makeToast("HELLO HELLO");
 
 		} else if (WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION
 				.equals(action)) {
@@ -83,6 +70,7 @@ public class NetworkHandler extends BroadcastReceiver {
 			// TODO
 		}
 	}
+	
 
 	private void checkstate(Intent intent) {
 		int state = intent.getIntExtra(WifiP2pManager.EXTRA_WIFI_STATE, -1);
