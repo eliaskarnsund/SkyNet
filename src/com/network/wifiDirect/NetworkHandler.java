@@ -1,10 +1,16 @@
 package com.network.wifiDirect;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
+import android.net.wifi.p2p.WifiP2pManager.PeerListListener;
+import android.widget.Toast;
 
 import com.network.skynet.MainActivity;
 
@@ -12,9 +18,12 @@ public class NetworkHandler extends BroadcastReceiver {
 
 	private final WifiP2pManager mManager;
 	private final Channel mChannel;
-
 	// the activity that this broadcast receiver will be registered in
 	private final MainActivity mActivity;
+	private WifiP2pManager.ActionListener actionListener;
+	private PeerListListener myPeerListListener;
+	private static final ScheduledExecutorService worker = Executors
+			.newSingleThreadScheduledExecutor();
 
 	public NetworkHandler(WifiP2pManager manager, Channel channel,
 			MainActivity activity) {
@@ -22,6 +31,25 @@ public class NetworkHandler extends BroadcastReceiver {
 		this.mManager = manager;
 		this.mChannel = channel;
 		this.mActivity = activity;
+		setupActionlistener();
+
+	}
+
+	private void setupActionlistener() {
+
+		actionListener = new Actionlistener(mActivity);
+
+		// TODO Test only, remove later
+		Runnable task = new Runnable() {
+			@Override
+			public void run() {
+				mManager.discoverPeers(mChannel, actionListener);
+			}
+		};
+		worker.schedule(task, 10, TimeUnit.SECONDS);
+		// TODO Schedule this action (?)
+		// mManager.discoverPeers(mChannel, actionListener);
+
 	}
 
 	@Override
@@ -33,23 +61,38 @@ public class NetworkHandler extends BroadcastReceiver {
 			// Check to see if Wi-Fi is enabled and notify appropriate activity
 			checkstate(intent);
 		} else if (WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION.equals(action)) {
-			// Call WifiP2pManager.requestPeers() to get a list of current peers
+			// request available peers from the wifi p2p manager. This is an
+			// asynchronous call and the calling activity is notified with a
+			// callback on PeerListListener.onPeersAvailable()
+			if (mManager != null) {
+				mManager.requestPeers(mChannel, myPeerListListener);
+			}
+
 		} else if (WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION
 				.equals(action)) {
 			// Respond to new connection or disconnections
+			// TODO
 		} else if (WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION
 				.equals(action)) {
 			// Respond to this device's wifi state changing
+			// TODO
 		}
 	}
 
 	private void checkstate(Intent intent) {
 		int state = intent.getIntExtra(WifiP2pManager.EXTRA_WIFI_STATE, -1);
 		if (state == WifiP2pManager.WIFI_P2P_STATE_ENABLED) {
+			// TODO
 			// Wifi P2P is enabled
+			makeToast("Wifi P2P enabled");
 		} else {
+			// TODO
 			// Wi-Fi P2P is not enabled
+			makeToast("Wifi P2P NOT enabled");
 		}
 	}
 
+	private void makeToast(CharSequence text) {
+		Toast.makeText(mActivity, text, Toast.LENGTH_SHORT).show();
+	}
 }
