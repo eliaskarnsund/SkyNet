@@ -6,13 +6,16 @@ import android.content.Context;
 import android.content.IntentFilter;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.network.wifiDirect.ConnectToDeviceAsync;
 import com.network.wifiDirect.NetworkHandler;
 
 public class MainActivity extends Activity {
@@ -69,6 +72,17 @@ public class MainActivity extends Activity {
 		// Toast.makeText(getApplicationContext(), "YES", Toast.LENGTH_SHORT)
 		// .show();
 	}
+	
+	public void connect(View view){
+		
+		ConnectToDeviceAsync runner = new ConnectToDeviceAsync();
+		Log.d("HELLO", "Kör AsyncTask.execute");
+	    runner.execute(mReceiver);
+		
+		
+		// mReceiver.connect();
+	}
+
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

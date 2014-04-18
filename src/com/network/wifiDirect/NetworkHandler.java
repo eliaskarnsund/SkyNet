@@ -5,9 +5,11 @@ import java.util.Collection;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.net.wifi.p2p.WifiP2pManager;
+import android.net.wifi.p2p.WifiP2pManager.ActionListener;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.net.wifi.p2p.WifiP2pManager.PeerListListener;
 import android.util.Log;
@@ -22,7 +24,7 @@ public class NetworkHandler extends BroadcastReceiver {
 	// the activity that this broadcast receiver will be registered in
 	private final MainActivity mActivity;
 	private WifiP2pManager.ActionListener actionListener;
-	private PeerListListener myPeerListListener;
+	private Peerlistener myPeerListListener;
 
 	public NetworkHandler(WifiP2pManager manager, Channel channel,
 			MainActivity activity) {
@@ -58,6 +60,11 @@ public class NetworkHandler extends BroadcastReceiver {
 			if (mManager != null) {
 				mManager.requestPeers(mChannel, myPeerListListener);
 				makeToast("List of peers retrieved");
+				// TODO maybe should be verified somehow by onPeersAvailable()
+				// verkar köras innan en enhet hittats, körs av knapp istället
+				// just nu
+				// onPeersAvailable()
+				// connect();
 			}
 
 		} else if (WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION
@@ -70,7 +77,36 @@ public class NetworkHandler extends BroadcastReceiver {
 			// TODO
 		}
 	}
-	
+
+	public void connect() {
+
+		Log.d("HELLO", "connect startar");
+		// obtain a peer from the WifiP2pDeviceList
+		WifiP2pDevice device = myPeerListListener.getDevice();
+		if (device == null) {
+			Log.d("HELLO", "device är null");
+			device = new WifiP2pDevice();
+			device.deviceAddress="32:85:a9:4a:7d:4d";
+			// DET HÄR FUNGERAR!!! 
+		}
+		Log.d("HELLO", "den här " + device.deviceAddress.toString());
+		WifiP2pConfig config = new WifiP2pConfig();
+		config.deviceAddress = device.deviceAddress;
+		mManager.connect(mChannel, config, new ActionListener() {
+
+			@Override
+			public void onSuccess() {
+				// success logic
+				makeToast("HALLELUJA");
+			}
+
+			@Override
+			public void onFailure(int reason) {
+				// failure logic
+			}
+		});
+
+	}
 
 	private void checkstate(Intent intent) {
 		int state = intent.getIntExtra(WifiP2pManager.EXTRA_WIFI_STATE, -1);

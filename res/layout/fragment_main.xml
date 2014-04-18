@@ -24,5 +24,14 @@
         android:onClick="searchNodes"
         android:text="@string/discoverButton" >
     </Button>
+        <Button
+        android:id="@+id/button2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/textView1"
+        android:layout_below="@+id/button1"
+        android:onClick="connect"
+        android:text="@string/connectButton" >
+    </Button>
 
 </RelativeLayout>
