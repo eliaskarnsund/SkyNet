@@ -14,7 +14,7 @@ public class ConnectToDeviceAsync extends AsyncTask<String, String, String> {
 		Log.d("HELLO", "connect startas av AsyncTask");
 		hand.connect();
 		
-		resp = "hello";
+		resp = "Done";
 		return resp;
 	}
 

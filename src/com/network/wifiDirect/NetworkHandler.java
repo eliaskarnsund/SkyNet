@@ -1,17 +1,13 @@
 package com.network.wifiDirect;
 
-import java.util.Collection;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
-import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pManager.ActionListener;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
-import android.net.wifi.p2p.WifiP2pManager.PeerListListener;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -83,6 +79,8 @@ public class NetworkHandler extends BroadcastReceiver {
 		Log.d("HELLO", "connect startar");
 		// obtain a peer from the WifiP2pDeviceList
 		WifiP2pDevice device = myPeerListListener.getDevice();
+		
+		// TODO FULHAX-connectar till plattan (fungerar)
 		if (device == null) {
 			Log.d("HELLO", "device är null");
 			device = new WifiP2pDevice();
@@ -97,7 +95,7 @@ public class NetworkHandler extends BroadcastReceiver {
 			@Override
 			public void onSuccess() {
 				// success logic
-				makeToast("HALLELUJA");
+				makeToast("Connected");
 			}
 
 			@Override

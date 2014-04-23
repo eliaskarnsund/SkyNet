@@ -29,6 +29,9 @@ public class Peerlistener implements PeerListListener {
 	public void onPeersAvailable(WifiP2pDeviceList peers) {
 		this.peers = peers;
 		
+		// ConnectToDeviceAsync runner = new ConnectToDeviceAsync();
+		// Log.d("HELLO", "Kör AsyncTask.execute");
+		// runner.execute(mReceiver);
 		
 		// TODO do something in separate thread?
 		Collection<WifiP2pDevice> devs = peers.getDeviceList();
@@ -46,6 +49,8 @@ public class Peerlistener implements PeerListListener {
 	public WifiP2pDevice getDevice() {
 		if (device!= null) {
 			Log.d("HELLO", "Hämtad adress " + device.deviceAddress);
+		}else {
+			Log.d("HELLO", "Device är null");
 		}
 		return device;
 	}
