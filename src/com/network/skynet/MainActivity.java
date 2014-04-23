@@ -1,29 +1,50 @@
 package com.network.skynet;
 
+import com.network.networkMonitor.NetworkMonitor;
+
 import android.app.Activity;
-import android.app.ActionBar;
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.os.Build;
+import android.widget.TextView;
 
 public class MainActivity extends Activity {
-
+	// App context
+	final Context appContext = this;
+	// label to display messages
+	public TextView lblMessage;
+	// Button to start the test
+//	private Button startButton;
+	private NetworkMonitor mNetworkMonitor;
+	// File url to download
+	private static String file_url = "http://vhost2.hansenet.de/1_mb_file.bin";
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
+		lblMessage = (TextView) findViewById(R.id.textView1);
+//		startButton = (Button) findViewById(R.id.startButton);
+		mNetworkMonitor = new NetworkMonitor(getApplication());
+//		//Start monitoring throughput
+		mNetworkMonitor.StartMonitoring();
+		DownloadFileFromURL download = new DownloadFileFromURL();
+		download.setmNetworkMonitor(mNetworkMonitor);
+		download.execute(file_url);
+//		setupStartButton();
+		
 		if (savedInstanceState == null) {
 			getFragmentManager().beginTransaction()
 					.add(R.id.container, new PlaceholderFragment()).commit();
 		}
 	}
-
+	
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -31,7 +52,7 @@ public class MainActivity extends Activity {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
-
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle action bar item clicks here. The action bar will
@@ -62,3 +83,4 @@ public class MainActivity extends Activity {
 	}
 
 }
+
