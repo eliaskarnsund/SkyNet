@@ -137,11 +137,6 @@ public class NetworkMonitor {
 		Log.d(TAG, "Monitorization setup 2");
 		// Store current location in UTM coordinates
 		Location x = locationManager.getLastKnownLocation(mProvider);
-		if(x==null){
-			Log.d(TAG, "Loction is null");
-			x = locationManager.getLastKnownLocation(mProvider);
-			Log.d(TAG, "Loction is null");
-		}
 		Log.d(TAG, "Monitorization setup 3");
 		if (x != null) {
 			locationOfMeasurement = new UTMLocation(x,

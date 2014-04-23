@@ -85,6 +85,16 @@ public class NetworkMapDataSource {
 		if (idRow == -1) {
 			Log.e(TAG, "SQL error in the method insertBWSample() ");
 		} else {
+			Cursor c = db.rawQuery("SELECT * FROM bandwidth_map", null);
+			c.moveToFirst();
+			Log.d(TAG,
+					"ID = " + c.getString(0) + ", UTM_ZONE = " + c.getString(1)
+							+ ", UTM_BAND = " + c.getString(2)
+							+ ", UTM_EASTING = " + c.getString(3)
+							+ ", UTM_NORTHING = " + c.getString(4)
+							+ ", BANDWIDTH = " + c.getString(5)
+							+ ", N_SAMPLES = " + c.getString(6)
+							+ ", LAST_SAMPLE = " + c.getString(7));
 			Log.d(TAG, "Successfully updated with method insertBWSample()");
 		}
 	}
@@ -101,10 +111,6 @@ public class NetworkMapDataSource {
 	 *            location
 	 */
 	public void updateBWSample(UTMLocation oLocation, float bandwidth) {
-		// UPDATE `bandwidth_map` SET `Bandwidth`=?,`N_Samples`=`N_Samples`+1
-		// WHERE `UTMzone`=? AND `UTMband`=? AND `UTMeasting`=? AND
-		// `UTMnorthing`=?
-
 		// bandwidth formula => BW = s x bandwidth + (1-s) BW
 		// s=0.125
 
@@ -121,9 +127,17 @@ public class NetworkMapDataSource {
 		// Update the table
 		try {
 			db.execSQL(sql, whereArgs);
-			
-			// TODO: Control so that the correct data is stored in the database
-			// db.execSQL();
+			// Log what is stored in the database.
+			Cursor c = db.rawQuery("SELECT * FROM bandwidth_map", null);
+			c.moveToFirst();
+			Log.d(TAG,
+					"ID = " + c.getString(0) + ", UTM_ZONE = " + c.getString(1)
+							+ ", UTM_BAND = " + c.getString(2)
+							+ ", UTM_EASTING = " + c.getString(3)
+							+ ", UTM_NORTHING = " + c.getString(4)
+							+ ", BANDWIDTH = " + c.getString(5)
+							+ ", N_SAMPLES = " + c.getString(6)
+							+ ", LAST_SAMPLE = " + c.getString(7));
 			Log.d(TAG, "Successfully updated with method updateBWSample()");
 		} catch (SQLiteException e) {
 			Log.d(TAG, "Unable to update DB with updateBWSample()");
