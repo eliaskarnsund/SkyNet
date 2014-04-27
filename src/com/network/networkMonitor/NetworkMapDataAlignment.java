@@ -28,12 +28,10 @@ public class NetworkMapDataAlignment extends IntentService {
 	public NetworkMapDataAlignment() {
 		super("NetworkMapDataAlignment");
 		DSNetworkMap = new NetworkMapDataSource(this);
-		Log.d(TAG, "Constructor");
 	}
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
-		Log.d(TAG, "Handle intent");
 		// Process data to be stored in our Network Map
 		Bundle extra = intent.getExtras();
 		long startTime = extra.getLong("START_TIME", 0);
@@ -64,7 +62,6 @@ public class NetworkMapDataAlignment extends IntentService {
 	 */
 	private void ProcessData(long startTime, long endTime, long startBytes,
 			long endBytes, UTMLocation MeasuredLocation) {
-		Log.d(TAG, "Process data");
 		// Difference of time in milliseconds
 		float DifTime = (endTime - startTime);
 		Log.d(TAG, "DifTime");
@@ -74,8 +71,6 @@ public class NetworkMapDataAlignment extends IntentService {
 		// Available bandwidth in Kbps
 		float availableBW = (DifBytes * 8) / DifTime;
 		Log.d(TAG, "availableBW");
-
-		Log.d(TAG, MeasuredLocation.toString());
 		
 		Log.w(TAG,
 				"Time stamp:" + Long.toString(System.currentTimeMillis())

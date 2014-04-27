@@ -34,7 +34,6 @@ class DownloadFileFromURL extends AsyncTask<String, String, String> {
 	 * */
 	@Override
 	protected String doInBackground(String... f_url) {
-
 		int count;
 		try {
 			URL url = new URL(f_url[0]);
@@ -52,11 +51,8 @@ class DownloadFileFromURL extends AsyncTask<String, String, String> {
 
 			while ((count = input.read(data)) != -1) {
 				// writing data to file
-				Log.d("DOWNLOAD", "read");
 				output.write(data, 0, count);
 			}
-			Log.d("DOWNLOAD",Environment
-					.getExternalStorageDirectory().toString());
 			
 			// Stop monitoring throughput
 			mNetworkMonitor.StopMonitoring();

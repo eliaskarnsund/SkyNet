@@ -115,32 +115,26 @@ public class NetworkMonitor {
 	 * network performance
 	 */
 	public void StartMonitoring() {
-		Log.d(TAG, "Monitorization has started");
 		/* Restart variables */
 		startBytes = 0;
 		startTime = 0;
 		endBytes = 0;
 		endTime = 0;
-		String mProvider = LocationManager.GPS_PROVIDER;
-
 		// Sets the GPS to the provider of coordinates
-
-
-		Log.d(TAG, "Monitorization setup 1");
-		Log.d(TAG, mProvider);
-		Log.d(TAG, locationManager.toString());
+		String mProvider = LocationManager.GPS_PROVIDER;
 		
-		// Register the listener with the Location Manager to receive
-		// location updates
-		locationManager.requestLocationUpdates(mProvider, (2 * 1000), 20,
-				locationListener);
-		Log.d(TAG, "Monitorization setup 2");
 		// Store current location in UTM coordinates
 		Location x = locationManager.getLastKnownLocation(mProvider);
-		Log.d(TAG, "Monitorization setup 3");
 		if (x != null) {
+			// Register the listener with the Location Manager to receive
+			// location updates
+			locationManager.requestLocationUpdates(mProvider, 2000, 10,
+					locationListener);
 			locationOfMeasurement = new UTMLocation(x,
 					Config.getNetworkMapAccuracy());
+		} else {
+			Log.d(TAG, "Last known location is null.");
+			return;
 		}
 
 		// get start time to measure elapsed time between start and stop
@@ -175,21 +169,18 @@ public class NetworkMonitor {
 		endBytes = TrafficStats.getTotalRxBytes();
 		// Send message to the service in charge of align the data
 		Intent serviceData = new Intent(mContext, NetworkMapDataAlignment.class);
-		Log.d(TAG, serviceData.toString());
 		serviceData.putExtra("START_TIME", startTime);
 		serviceData.putExtra("END_TIME", endTime);
 		serviceData.putExtra("START_BYTES", startBytes);
 		serviceData.putExtra("END_BYTES", endBytes);
 		serviceData.putExtra("LOCATION", locationOfMeasurement);
 		mContext.startService(serviceData);
-		Log.d(TAG, "Service started");
 		
 		// Updates the start time to measure elapsed time between start and stop
 		startTime = System.currentTimeMillis();
 		// Updates total bytes received at the start measurement point to
 		// compare to end measurement.
 		startBytes = TrafficStats.getTotalRxBytes();
-		Log.d(TAG, "Log measurement end");
 	}
 
 	/**

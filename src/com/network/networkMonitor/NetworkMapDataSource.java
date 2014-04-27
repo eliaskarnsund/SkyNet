@@ -85,6 +85,7 @@ public class NetworkMapDataSource {
 		if (idRow == -1) {
 			Log.e(TAG, "SQL error in the method insertBWSample() ");
 		} else {
+			// Display what is stored in the database in LogCat
 			Cursor c = db.rawQuery("SELECT * FROM bandwidth_map", null);
 			c.moveToFirst();
 			Log.d(TAG,
@@ -111,33 +112,39 @@ public class NetworkMapDataSource {
 	 *            location
 	 */
 	public void updateBWSample(UTMLocation oLocation, float bandwidth) {
-		// bandwidth formula => BW = s x bandwidth + (1-s) BW
-		// s=0.125
-
 		// Set the arguments for the where clause
 		String[] whereArgs = new String[] {
 				Integer.toString(oLocation.getZone()), oLocation.getBand(),
 				Integer.toString(oLocation.getUTMe()),
 				Integer.toString(oLocation.getUTMn()) };
 		// Set sql query
-		String sql = "UPDATE bandwidth_map SET bandwidth=("
+		/**
+		 * TODO: Use PreparedStatement to as sqlquery PreparedStatement update =
+		 * connection.prepareStatement("UPDATE bandwidth_map SET");
+		 */
+		String sql = "UPDATE bandwidth_map SET bandwidth= "
 				+ Float.toString(bandwidth)
-				+ "*0.125)+((1-0.125)*bandwidth),n_Samples=n_Samples+1, last_Sample = CURRENT_TIMESTAMP "
+				+ " ,n_Samples= n_Samples+1 , last_Sample = CURRENT_TIMESTAMP "
 				+ "WHERE `utmZone`=? AND `utmBand`=? AND `utmEasting`=? AND `utmNorthing`=? ";
 		// Update the table
 		try {
 			db.execSQL(sql, whereArgs);
-			// Log what is stored in the database.
+			// Display what is stored in the database in LogCat
 			Cursor c = db.rawQuery("SELECT * FROM bandwidth_map", null);
 			c.moveToFirst();
-			Log.d(TAG,
-					"ID = " + c.getString(0) + ", UTM_ZONE = " + c.getString(1)
-							+ ", UTM_BAND = " + c.getString(2)
-							+ ", UTM_EASTING = " + c.getString(3)
-							+ ", UTM_NORTHING = " + c.getString(4)
-							+ ", BANDWIDTH = " + c.getString(5)
-							+ ", N_SAMPLES = " + c.getString(6)
-							+ ", LAST_SAMPLE = " + c.getString(7));
+			int count = c.getCount();
+			for(int i=0; i<count;){
+				Log.d(TAG,
+						"ID = " + c.getString(0) + ", UTM_ZONE = " + c.getString(1)
+								+ ", UTM_BAND = " + c.getString(2)
+								+ ", UTM_EASTING = " + c.getString(3)
+								+ ", UTM_NORTHING = " + c.getString(4)
+								+ ", BANDWIDTH = " + c.getString(5)
+								+ ", N_SAMPLES = " + c.getString(6)
+								+ ", LAST_SAMPLE = " + c.getString(7));
+				c.moveToNext();
+				i++;
+			}
 			Log.d(TAG, "Successfully updated with method updateBWSample()");
 		} catch (SQLiteException e) {
 			Log.d(TAG, "Unable to update DB with updateBWSample()");
@@ -199,8 +206,6 @@ public class NetworkMapDataSource {
 	 * @return A Cursor which can be used to access the results of the query
 	 */
 	public Cursor selectBWSample(int oZone, String oBand, int oUTMe, int oUTMn) {
-		// SELECT `Bandwidth` FROM `bandwidth_map` WHERE `UTMzone`=? AND
-		// `UTMband`=? AND `UTMeasting`=? AND `UTMnorthing`=?
 		// Set the fields to retrieve
 		String[] columns = new String[] { table_bandwidth_map.BANDWIDTH };
 		// Set the where clause

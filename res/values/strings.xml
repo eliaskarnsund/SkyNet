@@ -2,9 +2,7 @@
 <resources>
 
     <string name="app_name">SkyNet</string>
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="textView">Text</string>
-    <string name="button">Knapp</string>
+    <string name="button">Start test</string>
 
 </resources>
