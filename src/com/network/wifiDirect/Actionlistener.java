@@ -2,6 +2,7 @@ package com.network.wifiDirect;
 
 import android.app.Activity;
 import android.net.wifi.p2p.WifiP2pManager;
+import android.util.Log;
 import android.widget.Toast;
 
 public class Actionlistener implements WifiP2pManager.ActionListener {
@@ -30,6 +31,7 @@ public class Actionlistener implements WifiP2pManager.ActionListener {
 		// the system broadcasts the WIFI_P2P_PEERS_CHANGED_ACTION
 		// intent
 		makeToast("Peers found");
+		Log.d("HELLO", "Ationlistener - onSucces called");
 
 	}
 

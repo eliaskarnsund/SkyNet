@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.IntentFilter;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -67,22 +66,22 @@ public class MainActivity extends Activity {
 
 	}
 
+	// run by button
 	public void searchNodes(View view) {
 		mReceiver.discover();
 		// Toast.makeText(getApplicationContext(), "YES", Toast.LENGTH_SHORT)
 		// .show();
 	}
-	
-	public void connect(View view){
-		
+
+	// run by button
+	public void connect(View view) {
+
 		ConnectToDeviceAsync runner = new ConnectToDeviceAsync();
 		Log.d("HELLO", "Kör AsyncTask.execute");
-	    runner.execute(mReceiver);
-		
-		
+		runner.execute(mReceiver);
+
 		// mReceiver.connect();
 	}
-
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

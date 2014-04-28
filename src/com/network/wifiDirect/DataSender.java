@@ -1,7 +1,6 @@
 package com.network.wifiDirect;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.ServerSocket;
@@ -18,12 +17,18 @@ import android.widget.TextView;
 
 public class DataSender extends AsyncTask<Void, String, String> {
 
-	private Context context;
-	private TextView statusText;
+	private final Context context;
+	private final TextView statusText;
 
 	public DataSender(Context context, View statusText) {
 		this.context = context;
 		this.statusText = (TextView) statusText;
+	}
+
+	public void execute(NetworkHandler mReceiver) {
+		// TODO Auto-generated method stub
+		doInBackground();
+
 	}
 
 	@Override
@@ -34,6 +39,8 @@ public class DataSender extends AsyncTask<Void, String, String> {
 			 * Create a server socket and wait for client connections. This call
 			 * blocks until a connection is accepted from a client
 			 */
+
+			Log.d("HELLO", "DataSender - Creating server socket");
 			ServerSocket serverSocket = new ServerSocket(8888);
 			Socket client = serverSocket.accept();
 
@@ -41,6 +48,7 @@ public class DataSender extends AsyncTask<Void, String, String> {
 			 * If this code is reached, a client has connected and transferred
 			 * data Save the input stream from the client as a JPEG file
 			 */
+			Log.d("HELLO", "DataSender - Client has connected");
 			final File f = new File(Environment.getExternalStorageDirectory()
 					+ "/" + context.getPackageName() + "/wifip2pshared-"
 					+ System.currentTimeMillis() + ".jpg");

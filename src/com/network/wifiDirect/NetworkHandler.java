@@ -19,8 +19,9 @@ public class NetworkHandler extends BroadcastReceiver {
 	private final Channel mChannel;
 	// the activity that this broadcast receiver will be registered in
 	private final MainActivity mActivity;
-	private WifiP2pManager.ActionListener actionListener;
-	private Peerlistener myPeerListListener;
+	private Actionlistener actionListener;
+	private final Peerlistener myPeerListListener;
+	DataSender sender;
 
 	public NetworkHandler(WifiP2pManager manager, Channel channel,
 			MainActivity activity) {
@@ -76,18 +77,20 @@ public class NetworkHandler extends BroadcastReceiver {
 
 	public void connect() {
 
-		Log.d("HELLO", "connect startar");
+		Log.d("HELLO", "NetworkHandler - connect startar");
 		// obtain a peer from the WifiP2pDeviceList
 		WifiP2pDevice device = myPeerListListener.getDevice();
-		
+
 		// TODO FULHAX-connectar till plattan (fungerar)
 		if (device == null) {
-			Log.d("HELLO", "device är null");
+			Log.d("HELLO",
+					"NetworkHandler - device är null och får hårdkodad adress");
 			device = new WifiP2pDevice();
-			device.deviceAddress="32:85:a9:4a:7d:4d";
-			// DET HÄR FUNGERAR!!! 
+			device.deviceAddress = "32:85:a9:4a:7d:4d";
+			// DET HÄR FUNGERAR!!!
 		}
-		Log.d("HELLO", "den här " + device.deviceAddress.toString());
+		Log.d("HELLO",
+				"NetworkHandler - Device är " + device.deviceAddress.toString());
 		WifiP2pConfig config = new WifiP2pConfig();
 		config.deviceAddress = device.deviceAddress;
 		mManager.connect(mChannel, config, new ActionListener() {
@@ -96,6 +99,8 @@ public class NetworkHandler extends BroadcastReceiver {
 			public void onSuccess() {
 				// success logic
 				makeToast("Connected");
+				sender = new DataSender(mActivity, null);
+				sender.execute();
 			}
 
 			@Override
