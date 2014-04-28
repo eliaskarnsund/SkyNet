@@ -153,6 +153,7 @@ public class NetworkMapDataSource {
 		}
 
 	}
+	
 
 	/**
 	 * This method retrieves the data stored in the table {@code bandwidth_map}

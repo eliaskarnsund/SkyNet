@@ -17,8 +17,10 @@ public class MainActivity extends Activity {
 	final Context appContext = this;
 	// Monitor used to measure throughput
 	private NetworkMonitor mNetworkMonitor;
-	// File url to download
-	private static String file_url = "http://vhost2.hansenet.de/1_mb_file.bin";
+	// 1 MB file url to download
+	private static String small_file_url = "http://vhost2.hansenet.de/1_mb_file.bin";
+	// 100 MB file url to download
+	private static String medium_file_url ="http://ipv4.download.thinkbroadband.com/100MB.zip";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -26,20 +28,38 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 		// Setup the NetworkMonitor
 		mNetworkMonitor = new NetworkMonitor(getApplication());
-		
 		if (savedInstanceState == null) {
 			getFragmentManager().beginTransaction()
 					.add(R.id.container, new PlaceholderFragment()).commit();
 		}
 	}
 	
-    public void onClickStartButton(View v)
+	/**
+	 * Sets up test on a 1 MB file
+	 * 
+	 * @param v
+	 */
+    public void onClickSmallDownload(View v)
     {
 		//Setup file download and start monitoring throughput
 		mNetworkMonitor.StartMonitoring();
 		DownloadFileFromURL download = new DownloadFileFromURL();
 		download.setmNetworkMonitor(mNetworkMonitor);
-		download.execute(file_url);
+		download.execute(small_file_url);
+    } 
+    
+	/**
+	 * Sets up test on a 100 MB file
+	 * 
+	 * @param v
+	 */
+    public void onClickMediumDownload(View v)
+    {
+		//Setup file download and start monitoring throughput
+		mNetworkMonitor.StartMonitoring();
+		DownloadFileFromURL download = new DownloadFileFromURL();
+		download.setmNetworkMonitor(mNetworkMonitor);
+		download.execute(medium_file_url);
     } 
     
 	@Override

@@ -10,12 +10,21 @@
 
 
     <Button
-        android:id="@+id/startButton"
+        android:id="@+id/startSmallDownloadButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_marginTop="15dp"
-        android:text="@string/button"
-        android:onClick="onClickStartButton" />
+        android:text="@string/smallDownloadButton"
+        android:onClick="onClickSmallDownload" />
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/startSmallDownloadButton"
+        android:onClick="onClickMediumDownload"
+        android:text="@string/mediumDownloadButton" />
 
 </RelativeLayout>
