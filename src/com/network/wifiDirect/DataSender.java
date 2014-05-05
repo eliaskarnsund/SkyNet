@@ -49,14 +49,17 @@ public class DataSender extends AsyncTask<Void, String, String> {
 			 * data Save the input stream from the client as a JPEG file
 			 */
 			Log.d("HELLO", "DataSender - Client has connected");
+			// TODO skicka något vettigt
 			final File f = new File(Environment.getExternalStorageDirectory()
 					+ "/" + context.getPackageName() + "/wifip2pshared-"
 					+ System.currentTimeMillis() + ".jpg");
 
+			// TODO Ta bort
 			File dirs = new File(f.getParent());
 			if (!dirs.exists())
 				dirs.mkdirs();
 			f.createNewFile();
+
 			InputStream inputstream = client.getInputStream();
 			// TODO copyFile(inputstream, new FileOutputStream(f));
 			serverSocket.close();
@@ -73,6 +76,7 @@ public class DataSender extends AsyncTask<Void, String, String> {
 	@Override
 	protected void onPostExecute(String result) {
 		if (result != null) {
+			Log.d("HELLO", "DataSender - " + statusText);
 			statusText.setText("File copied - " + result);
 			Intent intent = new Intent();
 			intent.setAction(android.content.Intent.ACTION_VIEW);
