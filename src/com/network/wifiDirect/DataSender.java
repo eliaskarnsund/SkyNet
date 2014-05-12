@@ -40,15 +40,17 @@ public class DataSender extends AsyncTask<Void, String, String> {
 			 * blocks until a connection is accepted from a client
 			 */
 
-			Log.d("HELLO", "DataSender - Creating server socket");
-			ServerSocket serverSocket = new ServerSocket(8888);
+			Log.d("Datasender", "DataSender - Creating server socket");
+			ServerSocket serverSocket = new ServerSocket(1234);
+			Log.d("Datasender", "DataSender - skapat serversocket");
 			Socket client = serverSocket.accept();
+			Log.d("Datasender", "DataSender - serverSocket har accepterat");
 
 			/**
 			 * If this code is reached, a client has connected and transferred
 			 * data Save the input stream from the client as a JPEG file
 			 */
-			Log.d("HELLO", "DataSender - Client has connected");
+			Log.d("Datasender", "DataSender - Client has connected");
 			// TODO skicka något vettigt
 			final File f = new File(Environment.getExternalStorageDirectory()
 					+ "/" + context.getPackageName() + "/wifip2pshared-"
