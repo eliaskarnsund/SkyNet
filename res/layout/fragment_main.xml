@@ -27,15 +27,5 @@
         android:onClick="onClickMediumDownload"
         android:text="@string/mediumDownloadButton" />
 
-    <TextView
-        android:id="@+id/statusText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/startSmallDownloadButton"
-        android:layout_below="@+id/button1"
-        android:ems="10"
-        android:text="@string/waiting" />
-
-  
 
 </RelativeLayout>

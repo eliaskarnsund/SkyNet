@@ -11,7 +11,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 public class MainActivity extends Activity {
 	// App context
@@ -23,15 +22,12 @@ public class MainActivity extends Activity {
 	// 100 MB file url to download
 	private static String medium_file_url = "http://ipv4.download.thinkbroadband.com/100MB.zip";
 
-	public TextView text;
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		// Setup the NetworkMonitor
-		text = (TextView) findViewById(R.id.statusText);
-		mNetworkMonitor = new NetworkMonitor(getApplication(), text);
+		mNetworkMonitor = new NetworkMonitor(getApplication());
 		if (savedInstanceState == null) {
 			getFragmentManager().beginTransaction()
 					.add(R.id.container, new PlaceholderFragment()).commit();

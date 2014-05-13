@@ -8,7 +8,7 @@ import android.location.LocationManager;
 import android.net.TrafficStats;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * This class implements the methods to take data which are used to determine
@@ -31,6 +31,7 @@ public class NetworkMonitor {
 	// Debug attributes
 	private final String TAG = "NetworkMonitor";
 	private Context mContext;
+	private String mProvider;
 	// Monitoring attributes
 	public static int NETWORK_MAP_ACCURACY = 10;
 	private long startBytes;
@@ -39,8 +40,6 @@ public class NetworkMonitor {
 	private long endBytes;
 	private UTMLocation locationOfMeasurement;
 	private UTMLocation previousLocation;
-	// Field to show status of the test
-	public TextView statusText;
 
 	// Location attributes
 	private LocationManager locationManager = null;
@@ -51,12 +50,11 @@ public class NetworkMonitor {
 	 * 
 	 * @param context
 	 *            The application context
-	 * @param text 
+	 * @param text
 	 */
-	public NetworkMonitor(Context context, TextView text) {
+	public NetworkMonitor(Context context) {
 
 		mContext = context;
-		this.statusText = text;
 		// Acquire a reference to the system Location Manager and set location
 		// variables and location listener.
 		locationManager = (LocationManager) mContext
@@ -77,7 +75,6 @@ public class NetworkMonitor {
 				// previous
 				// UTM location with the new UTM location
 				if (!locationOfMeasurement.isEqual(newUTMLocation)) {
-					statusText.setText("Ny position: " + newUTMLocation.toString());
 					// If we are in a new UTM Location, the devices has
 					// performed a transition between UTM Location. Then we want
 					// to measure the download speed of the location we just
@@ -127,20 +124,20 @@ public class NetworkMonitor {
 		startTime = 0;
 		endBytes = 0;
 		endTime = 0;
-		statusText.setText("Test påbörjat");
 		// Sets the GPS to the provider of coordinates
-		String mProvider = LocationManager.GPS_PROVIDER;
-		
+		mProvider = LocationManager.GPS_PROVIDER;
+
 		// Store current location in UTM coordinates
 		Location x = locationManager.getLastKnownLocation(mProvider);
 		if (x != null) {
 			// Register the listener with the Location Manager to receive
 			// location updates
-			locationManager.requestLocationUpdates(mProvider, 2000, NETWORK_MAP_ACCURACY,
+			locationManager.requestLocationUpdates(mProvider, 2000, 5,
 					locationListener);
-			locationOfMeasurement = new UTMLocation(x,
-					NETWORK_MAP_ACCURACY);
+			locationOfMeasurement = new UTMLocation(x, NETWORK_MAP_ACCURACY);
 		} else {
+			Toast.makeText(mContext, "Locatoin is null", Toast.LENGTH_SHORT).show();
+			CancelMonitoring();
 			Log.d(TAG, "Last known location is null.");
 			return;
 		}
@@ -158,12 +155,16 @@ public class NetworkMonitor {
 	 * alignment module
 	 */
 	public void StopMonitoring() {
+		if(locationOfMeasurement==null){
+			CancelMonitoring();
+			return;
+		}
 		logMeasurement();
 
 		// Unregister the listener of location updates
 		locationManager.removeUpdates(locationListener);
-		statusText.setText("Test avslutat");		
 		Log.d(TAG, "Monitorization has stopped");
+		Toast.makeText(mContext, "Test is done", Toast.LENGTH_SHORT).show();
 	}
 
 	/**
@@ -203,5 +204,6 @@ public class NetworkMonitor {
 		endBytes = 0;
 		endTime = 0;
 		Log.d(TAG, "Monitorization has been canceled");
+		Toast.makeText(mContext, "Monitorization has been canceled", Toast.LENGTH_SHORT).show();
 	}
 }
