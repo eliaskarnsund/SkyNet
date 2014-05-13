@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 public class MainActivity extends Activity {
 	// App context
@@ -20,48 +21,49 @@ public class MainActivity extends Activity {
 	// 1 MB file url to download
 	private static String small_file_url = "http://vhost2.hansenet.de/1_mb_file.bin";
 	// 100 MB file url to download
-	private static String medium_file_url ="http://ipv4.download.thinkbroadband.com/100MB.zip";
-	
+	private static String medium_file_url = "http://ipv4.download.thinkbroadband.com/100MB.zip";
+
+	public TextView text;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		// Setup the NetworkMonitor
-		mNetworkMonitor = new NetworkMonitor(getApplication());
+		text = (TextView) findViewById(R.id.statusText);
+		mNetworkMonitor = new NetworkMonitor(getApplication(), text);
 		if (savedInstanceState == null) {
 			getFragmentManager().beginTransaction()
 					.add(R.id.container, new PlaceholderFragment()).commit();
 		}
 	}
-	
+
 	/**
 	 * Sets up test on a 1 MB file
 	 * 
 	 * @param v
 	 */
-    public void onClickSmallDownload(View v)
-    {
-		//Setup file download and start monitoring throughput
+	public void onClickSmallDownload(View v) {
+		// Setup file download and start monitoring throughput
 		mNetworkMonitor.StartMonitoring();
 		DownloadFileFromURL download = new DownloadFileFromURL();
 		download.setmNetworkMonitor(mNetworkMonitor);
 		download.execute(small_file_url);
-    } 
-    
+	}
+
 	/**
 	 * Sets up test on a 100 MB file
 	 * 
 	 * @param v
 	 */
-    public void onClickMediumDownload(View v)
-    {
-		//Setup file download and start monitoring throughput
+	public void onClickMediumDownload(View v) {
+		// Setup file download and start monitoring throughput
 		mNetworkMonitor.StartMonitoring();
 		DownloadFileFromURL download = new DownloadFileFromURL();
 		download.setmNetworkMonitor(mNetworkMonitor);
 		download.execute(medium_file_url);
-    } 
-    
+	}
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -69,7 +71,7 @@ public class MainActivity extends Activity {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle action bar item clicks here. The action bar will
@@ -100,4 +102,3 @@ public class MainActivity extends Activity {
 	}
 
 }
-
