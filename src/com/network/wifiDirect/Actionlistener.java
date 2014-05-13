@@ -13,7 +13,8 @@ public class Actionlistener implements WifiP2pManager.ActionListener {
 		super();
 		this.mActivity = activity;
 	}
-
+	
+	
 	@Override
 	public void onFailure(int reason) {
 		// TODO Auto-generated method stub
