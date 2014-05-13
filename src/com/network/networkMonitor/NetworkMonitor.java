@@ -154,7 +154,7 @@ public class NetworkMonitor {
 
 		// Unregister the listener of location updates
 		locationManager.removeUpdates(locationListener);
-
+		
 		Log.d(TAG, "Monitorization has stopped");
 	}
 

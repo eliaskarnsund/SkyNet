@@ -117,14 +117,12 @@ public class NetworkMapDataSource {
 				Integer.toString(oLocation.getZone()), oLocation.getBand(),
 				Integer.toString(oLocation.getUTMe()),
 				Integer.toString(oLocation.getUTMn()) };
-		// Set sql query
-		/**
-		 * TODO: Use PreparedStatement to as sqlquery PreparedStatement update =
-		 * connection.prepareStatement("UPDATE bandwidth_map SET");
-		 */
+		// Set sql query with bandwidth formula => BW = s x bandwidth + (1-s) BW
+		// s=0.125
+		double s = 0.125;
 		String sql = "UPDATE bandwidth_map SET bandwidth= "
 				+ Float.toString(bandwidth)
-				+ " ,n_Samples= n_Samples+1 , last_Sample = CURRENT_TIMESTAMP "
+				+ "*"+s+")+((1-"+s+")*bandwidth) , n_Samples= n_Samples+1 , last_Sample = CURRENT_TIMESTAMP "
 				+ "WHERE `utmZone`=? AND `utmBand`=? AND `utmEasting`=? AND `utmNorthing`=? ";
 		// Update the table
 		try {
@@ -133,15 +131,16 @@ public class NetworkMapDataSource {
 			Cursor c = db.rawQuery("SELECT * FROM bandwidth_map", null);
 			c.moveToFirst();
 			int count = c.getCount();
-			for(int i=0; i<count;){
+			for (int i = 0; i < count;) {
 				Log.d(TAG,
-						"ID = " + c.getString(0) + ", UTM_ZONE = " + c.getString(1)
-								+ ", UTM_BAND = " + c.getString(2)
-								+ ", UTM_EASTING = " + c.getString(3)
-								+ ", UTM_NORTHING = " + c.getString(4)
-								+ ", BANDWIDTH = " + c.getString(5)
-								+ ", N_SAMPLES = " + c.getString(6)
-								+ ", LAST_SAMPLE = " + c.getString(7));
+						"ID = " + c.getString(0) + ", UTM_ZONE = "
+								+ c.getString(1) + ", UTM_BAND = "
+								+ c.getString(2) + ", UTM_EASTING = "
+								+ c.getString(3) + ", UTM_NORTHING = "
+								+ c.getString(4) + ", BANDWIDTH = "
+								+ c.getString(5) + ", N_SAMPLES = "
+								+ c.getString(6) + ", LAST_SAMPLE = "
+								+ c.getString(7));
 				c.moveToNext();
 				i++;
 			}
@@ -153,7 +152,6 @@ public class NetworkMapDataSource {
 		}
 
 	}
-	
 
 	/**
 	 * This method retrieves the data stored in the table {@code bandwidth_map}

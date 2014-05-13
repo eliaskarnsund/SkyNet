@@ -18,7 +18,6 @@ import android.util.Log;
  * */
 class DownloadFileFromURL extends AsyncTask<String, String, String> {
 
-
 	private NetworkMonitor mNetworkMonitor;
 	
 	/**
