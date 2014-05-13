@@ -66,6 +66,7 @@ public class NetworkHandler extends BroadcastReceiver {
 
 		} else if (WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION
 				.equals(action)) {
+			Log.d("HELLO", "CONNECTION CHANGED ACTION");
 			// Respond to new connection or disconnections
 			// TODO
 		} else if (WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION
