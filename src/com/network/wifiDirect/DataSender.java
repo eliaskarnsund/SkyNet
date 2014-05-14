@@ -1,89 +1,87 @@
 package com.network.wifiDirect;
 
-import java.io.File;
+// Copyright 2011 Google Inc. All Rights Reserved.
+
+
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.ServerSocket;
+import java.io.OutputStream;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 
+import android.app.IntentService;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Environment;
 import android.util.Log;
-import android.view.View;
-import android.widget.TextView;
 
-public class DataSender extends AsyncTask<Void, String, String> {
+/**
+ * A service that process each file transfer request i.e Intent by opening a
+ * socket connection with the WiFi Direct Group Owner and writing the file
+ */
+public class DataSender extends IntentService {
 
-	private final Context context;
-	private final TextView statusText;
+    private static final int SOCKET_TIMEOUT = 5000;
+    public static final String ACTION_SEND_FILE = "com.example.android.wifidirect.SEND_FILE";
+    public static final String EXTRAS_FILE_PATH = "file_url";
+    public static final String EXTRAS_GROUP_OWNER_ADDRESS = "go_host";
+    public static final String EXTRAS_GROUP_OWNER_PORT = "go_port";
 
-	public DataSender(Context context, View statusText) {
-		this.context = context;
-		this.statusText = (TextView) statusText;
-	}
+    public DataSender(String name) {
+        super(name);
+    }
 
-	public void execute(NetworkHandler mReceiver) {
-		// TODO Auto-generated method stub
-		doInBackground();
+    public DataSender() {
+        super("FileTransferService");
+    }
 
-	}
+    /*
+     * (non-Javadoc)
+     * @see android.app.IntentService#onHandleIntent(android.content.Intent)
+     */
+    @Override
+    protected void onHandleIntent(Intent intent) {
 
-	@Override
-	protected String doInBackground(Void... params) {
-		try {
+        Context context = getApplicationContext();
+        if (intent.getAction().equals(ACTION_SEND_FILE)) {
+            String fileUri = intent.getExtras().getString(EXTRAS_FILE_PATH);
+            String host = intent.getExtras().getString(EXTRAS_GROUP_OWNER_ADDRESS);
+            Socket socket = new Socket();
+            int port = intent.getExtras().getInt(EXTRAS_GROUP_OWNER_PORT);
 
-			/**
-			 * Create a server socket and wait for client connections. This call
-			 * blocks until a connection is accepted from a client
-			 */
+            try {
+                Log.d("DataSender", "Opening client socket - ");
+                socket.bind(null);
+                socket.connect((new InetSocketAddress(host, port)), SOCKET_TIMEOUT);
 
-			Log.d("Datasender", "DataSender - Creating server socket");
-			ServerSocket serverSocket = new ServerSocket(1234);
-			Log.d("Datasender", "DataSender - skapat serversocket");
-			Socket client = serverSocket.accept();
-			Log.d("Datasender", "DataSender - serverSocket har accepterat");
+                Log.d("DataSender", "Client socket - " + socket.isConnected());
+                OutputStream stream = socket.getOutputStream();
+                ContentResolver cr = context.getContentResolver();
+                InputStream is = null;
+                try {
+                    is = cr.openInputStream(Uri.parse(fileUri));
+                } catch (FileNotFoundException e) {
+                    Log.d("DataSender", e.toString());
+                }
+                // DeviceDetailFragment.copyFile(is, stream);
+                Log.d("DataSender", "Client: Data written");
+            } catch (IOException e) {
+                Log.e("DataSender", e.getMessage());
+            } finally {
+                if (socket != null) {
+                    if (socket.isConnected()) {
+                        try {
+                            socket.close();
+                        } catch (IOException e) {
+                            // Give up
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
 
-			/**
-			 * If this code is reached, a client has connected and transferred
-			 * data Save the input stream from the client as a JPEG file
-			 */
-			Log.d("Datasender", "DataSender - Client has connected");
-			// TODO skicka något vettigt
-			final File f = new File(Environment.getExternalStorageDirectory()
-					+ "/" + context.getPackageName() + "/wifip2pshared-"
-					+ System.currentTimeMillis() + ".jpg");
-
-			// TODO Ta bort
-			File dirs = new File(f.getParent());
-			if (!dirs.exists())
-				dirs.mkdirs();
-			f.createNewFile();
-
-			InputStream inputstream = client.getInputStream();
-			// TODO copyFile(inputstream, new FileOutputStream(f));
-			serverSocket.close();
-			return f.getAbsolutePath();
-		} catch (IOException e) {
-			// Log.e(WiFiDirectActivity.TAG, e.getMessage());
-			return null;
-		}
-	}
-
-	/**
-	 * Start activity that can handle the JPEG image
-	 */
-	@Override
-	protected void onPostExecute(String result) {
-		if (result != null) {
-			Log.d("HELLO", "DataSender - " + statusText);
-			statusText.setText("File copied - " + result);
-			Intent intent = new Intent();
-			intent.setAction(android.content.Intent.ACTION_VIEW);
-			intent.setDataAndType(Uri.parse("file://" + result), "image/*");
-			context.startActivity(intent);
-		}
-	}
+        }
+    }
 }

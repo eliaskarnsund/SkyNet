@@ -4,18 +4,21 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pManager.ActionListener;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
+import android.net.wifi.p2p.WifiP2pManager.ConnectionInfoListener;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.network.skynet.MainActivity;
 
-public class NetworkHandler extends BroadcastReceiver {
+public class NetworkHandler extends BroadcastReceiver implements
+    ConnectionInfoListener {
 
 	private final WifiP2pManager mManager;
 	private final Channel        mChannel;
@@ -23,8 +26,8 @@ public class NetworkHandler extends BroadcastReceiver {
 	private final MainActivity   mActivity;
 	private Actionlistener       actionListener;
 	private final Peerlistener   myPeerListListener;
-	DataSender                   sender;
-	WifiP2pManager.ConnectionInfoListener connListener;
+	DataServer                   sender;
+	WifiP2pInfo                  info;
 
 	public NetworkHandler(WifiP2pManager manager, Channel channel,
 	    MainActivity activity) {
@@ -34,13 +37,6 @@ public class NetworkHandler extends BroadcastReceiver {
 		this.mActivity = activity;
 		setupActionlistener();
 		myPeerListListener = new Peerlistener(mActivity);
-		connListener = new WifiP2pManager.ConnectionInfoListener() {
-
-	    @Override
-	    public void onConnectionInfoAvailable(WifiP2pInfo info) {
-		    Log.d("TAG", "ConnctionInfo " + info.toString());
-	    }
-    };
 
 	}
 
@@ -94,9 +90,9 @@ public class NetworkHandler extends BroadcastReceiver {
 				// we are connected with the other device, request connection
 				// info to find group owner IP
 
-				//DeviceDetailFragment fragment = (DeviceDetailFragment) activity
+				// DeviceDetailFragment fragment = (DeviceDetailFragment) activity
 				// .getFragmentManager().findFragmentById(R.id.frag_detail);
-				mManager.requestConnectionInfo(mChannel, connListener);
+				mManager.requestConnectionInfo(mChannel, this);
 			} else {
 				// It's a disconnect
 				// activity.resetData();
@@ -133,7 +129,7 @@ public class NetworkHandler extends BroadcastReceiver {
 			public void onSuccess() {
 				// success logic
 				makeToast("Connected");
-				sender = new DataSender(mActivity, null);
+				sender = new DataServer(mActivity, null);
 				sender.execute();
 			}
 
@@ -158,7 +154,72 @@ public class NetworkHandler extends BroadcastReceiver {
 		}
 	}
 
+	//public void sendData(int requestCode, int resultCode, Intent data) {
+	public void sendData(Intent data) {
+		// User has picked an image. Transfer it to group owner i.e peer using
+		// FileTransferService.
+		Uri uri = data.getData();
+		// TextView statusText = (TextView)
+		// mContentView.findViewById(R.id.status_text);
+		// statusText.setText("Sending: " + uri);
+		Log.d("DataSender", "Intent----------- " + uri);
+		Intent serviceIntent = new Intent(mActivity, DataSender.class);
+		serviceIntent.setAction(DataSender.ACTION_SEND_FILE);
+		serviceIntent.putExtra(DataSender.EXTRAS_FILE_PATH, uri.toString());
+		serviceIntent.putExtra(DataSender.EXTRAS_GROUP_OWNER_ADDRESS,
+		    info.groupOwnerAddress.getHostAddress());
+		serviceIntent.putExtra(DataSender.EXTRAS_GROUP_OWNER_PORT, 8988);
+		mActivity.startService(serviceIntent);
+	}
+
 	private void makeToast(CharSequence text) {
 		Toast.makeText(mActivity, text, Toast.LENGTH_SHORT).show();
 	}
+
+	@Override
+	public void onConnectionInfoAvailable(WifiP2pInfo info) {
+		// if (progressDialog != null && progressDialog.isShowing()) {
+		// progressDialog.dismiss();
+		// }
+		this.info = info;
+		// this.getView().setVisibility(View.VISIBLE);
+
+		// The owner IP is now known.
+		// TODO
+		// TextView view = (TextView) mContentView.findViewById(R.id.group_owner);
+		// view.setText(getResources().getString(R.string.group_owner_text)
+		// + ((info.isGroupOwner == true) ? getResources().getString(
+		// R.string.yes) : getResources().getString(R.string.no)));
+
+		// InetAddress from WifiP2pInfo struct.
+		// TODO
+		// view = (TextView) mContentView.findViewById(R.id.device_info);
+		// view.setText("Group Owner IP - "
+		// + info.groupOwnerAddress.getHostAddress());
+
+		info.groupOwnerAddress.getHostAddress();
+
+		// After the group negotiation, we assign the group owner as the file
+		// server. The file server is single threaded, single connection server
+		// socket.
+		if (info.groupFormed && info.isGroupOwner) {
+			// TODO
+			new DataServer(mActivity).execute();
+			// new FileServerAsyncTask(getActivity(),
+			// mContentView.findViewById(R.id.status_text)).execute();
+		} else if (info.groupFormed) {
+			// The other device acts as the client. In this case, we enable the
+			// get file button.
+			// TODO
+			// mContentView.findViewById(R.id.btn_start_client).setVisibility(
+			// View.VISIBLE);
+			// ((TextView) mContentView.findViewById(R.id.status_text))
+			// .setText(getResources().getString(R.string.client_text));
+		}
+
+		// hide the connect button
+		// mContentView.findViewById(R.id.btn_connect).setVisibility(View.GONE);
+
+	}
+
 }

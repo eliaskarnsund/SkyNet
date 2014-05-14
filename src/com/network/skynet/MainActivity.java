@@ -82,6 +82,13 @@ public class MainActivity extends Activity {
 
 		// mReceiver.connect();
 	}
+	
+	// run by button
+	public void sendData(View view) {
+
+	mReceiver.sendData(data)
+		// mReceiver.connect();
+	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
