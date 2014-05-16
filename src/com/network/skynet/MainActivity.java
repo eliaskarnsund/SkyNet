@@ -12,8 +12,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.network.networkMonitor.NetworkMonitor;
 import com.network.wifidirect.WiFiDirectFragment;
 
 public class MainActivity extends Activity {
@@ -40,22 +38,6 @@ public class MainActivity extends Activity {
 					.add(R.id.frag_main, new WiFiDirectFragment()).commit();
 		}
 	}
-
-/**
- * Funktion som ska implementeras för dataskickande
- */
-//	public void onClickGetDataBase(View v){
-//		final GlobalData global = ((GlobalData) getApplicationContext());
-//		NetworkMapDataSource networkMap = global.getDSNetworkMap();
-//		if (networkMap!=null){
-//		Toast.makeText(getApplication(),"TOAST", Toast.LENGTH_SHORT).show();
-//		Cursor c = networkMap.getTableCursor();
-//		c.moveToFirst();
-//		Toast.makeText(getApplication(), c.getString(0), Toast.LENGTH_SHORT).show();
-//		}else{
-//			Toast.makeText(getApplication(),"Map is null", Toast.LENGTH_SHORT).show();
-//		}
-//	}
 	
 	/**
 	 * Sets up test on a 1 MB file

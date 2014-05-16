@@ -10,13 +10,17 @@ import java.io.PrintStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.Random;
-
+import com.network.networkMonitor.GlobalData;
+import com.network.networkMonitor.NetworkMapDataSource;
 import android.app.IntentService;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
 
 /**
  * A service that process each file transfer request i.e Intent by opening a
@@ -77,7 +81,23 @@ public class FileTransferService extends IntentService {
 				// TODO SKICKA NÅGOT VETTIGT
 				Random rand = new Random();
 				PrintStream printStream = new PrintStream(stream);
-				printStream.print("Hej " + rand.nextInt());
+				Cursor cursor = getCursor();
+				cursor.moveToFirst();
+				int count = cursor.getCount();
+				String row;
+				//for (int i = 0; i < count;) {
+					row = "ID = " + cursor.getString(0) + ", UTM_ZONE = "
+							+ cursor.getString(1) + ", UTM_BAND = "
+							+ cursor.getString(2) + ", UTM_EASTING = "
+							+ cursor.getString(3) + ", UTM_NORTHING = "
+							+ cursor.getString(4) + ", BANDWIDTH = "
+							+ cursor.getString(5) + ", N_SAMPLES = "
+							+ cursor.getString(6) + ", LAST_SAMPLE = "
+							+ cursor.getString(7);
+					cursor.moveToNext();
+				//	i++;
+				//}
+				printStream.print(row);
 
 				Log.d(WiFiDirectFragment.TAG, "Client: Data written");
 			} catch (IOException e) {
@@ -95,6 +115,17 @@ public class FileTransferService extends IntentService {
 				}
 			}
 
+		}
+	}
+
+	public Cursor getCursor() {
+		final GlobalData global = ((GlobalData) getApplicationContext());
+		NetworkMapDataSource networkMap = global.getDSNetworkMap();
+		if (networkMap != null) {
+			Cursor c = networkMap.getTableCursor();
+			return c;
+		} else {
+			return null;
 		}
 	}
 }
