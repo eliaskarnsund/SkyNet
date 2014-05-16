@@ -1,5 +1,7 @@
 package com.network.networkMonitor;
 
+import com.network.networkMonitor.MySQLiteOpenHelper.table_bandwidth_map;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -7,13 +9,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.util.Log;
 
-import com.network.networkMonitor.MySQLiteOpenHelper.table_bandwidth_map;
-
 /**
  * This class managed the operations with the Database where the network
  * performance map is stored
  * 
- * @author Alberto Garcï¿½a
+ * @author Alberto García
  */
 public class NetworkMapDataSource {
 
@@ -88,15 +88,20 @@ public class NetworkMapDataSource {
 			// Display what is stored in the database in LogCat
 			Cursor c = db.rawQuery("SELECT * FROM bandwidth_map", null);
 			c.moveToFirst();
-			Log.d(TAG,
-					"ID = " + c.getString(0) + ", UTM_ZONE = " + c.getString(1)
-							+ ", UTM_BAND = " + c.getString(2)
-							+ ", UTM_EASTING = " + c.getString(3)
-							+ ", UTM_NORTHING = " + c.getString(4)
-							+ ", BANDWIDTH = " + c.getString(5)
-							+ ", N_SAMPLES = " + c.getString(6)
-							+ ", LAST_SAMPLE = " + c.getString(7));
-			Log.d(TAG, "Successfully updated with method insertBWSample()");
+			int count = c.getCount();
+			for (int i = 0; i < count;) {
+				Log.d(TAG,
+						"ID = " + c.getString(0) + ", UTM_ZONE = "
+								+ c.getString(1) + ", UTM_BAND = "
+								+ c.getString(2) + ", UTM_EASTING = "
+								+ c.getString(3) + ", UTM_NORTHING = "
+								+ c.getString(4) + ", BANDWIDTH = "
+								+ c.getString(5) + ", N_SAMPLES = "
+								+ c.getString(6) + ", LAST_SAMPLE = "
+								+ c.getString(7));
+				c.moveToNext();
+				i++;
+			}
 		}
 	}
 
@@ -122,11 +127,7 @@ public class NetworkMapDataSource {
 		double s = 0.125;
 		String sql = "UPDATE bandwidth_map SET bandwidth= ("
 				+ Float.toString(bandwidth)
-				+ "*"
-				+ s
-				+ ")+((1-"
-				+ s
-				+ ")*bandwidth) , n_Samples= n_Samples+1 , last_Sample = CURRENT_TIMESTAMP "
+				+ "*"+s+")+((1-"+s+")*bandwidth) , n_Samples= n_Samples+1 , last_Sample = CURRENT_TIMESTAMP "
 				+ "WHERE `utmZone`=? AND `utmBand`=? AND `utmEasting`=? AND `utmNorthing`=? ";
 		// Update the table
 		try {
@@ -245,6 +246,13 @@ public class NetworkMapDataSource {
 			cur.close();
 			return false;
 		}
+	}
+	
+	public Cursor getTableCursor(){
+		Log.d(TAG, "Get cursor");
+		Cursor c = db.rawQuery("SELECT * FROM bandwidth_map", null);
+		Log.d(TAG, "Cursor gotten");
+		return c;
 	}
 
 }

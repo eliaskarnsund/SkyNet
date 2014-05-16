@@ -8,14 +8,15 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.network.skynet.MainActivity$PlaceholderFragment" >
 
+
     <Button
         android:id="@+id/startSmallDownloadButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_marginTop="15dp"
-        android:onClick="onClickSmallDownload"
-        android:text="@string/smallDownloadButton" />
+        android:text="@string/smallDownloadButton"
+        android:onClick="onClickSmallDownload" />
 
     <Button
         android:id="@+id/button1"
@@ -26,7 +27,16 @@
         android:onClick="onClickMediumDownload"
         android:text="@string/mediumDownloadButton" />
 
-    <LinearLayout
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/button1"
+        android:onClick="onClickLargeDownload"
+        android:text="@string/largeDownloadButton" />
+
+<LinearLayout
         android:id="@+id/linearLayout1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -1,5 +1,7 @@
 package com.network.skynet;
 
+import com.network.networkMonitor.NetworkMonitor;
+
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
@@ -23,6 +25,8 @@ public class MainActivity extends Activity {
 	private static String small_file_url = "http://vhost2.hansenet.de/1_mb_file.bin";
 	// 100 MB file url to download
 	private static String medium_file_url = "http://ipv4.download.thinkbroadband.com/100MB.zip";
+	// 512 MB file url to download
+	private static String large_file_url = "http://ipv4.download.thinkbroadband.com/512MB.zip";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -30,13 +34,29 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 		// Setup the NetworkMonitor
 		mNetworkMonitor = new NetworkMonitor(getApplication());
-
+		
 		if (savedInstanceState == null) {
 			getFragmentManager().beginTransaction()
 					.add(R.id.frag_main, new WiFiDirectFragment()).commit();
 		}
 	}
 
+/**
+ * Funktion som ska implementeras för dataskickande
+ */
+//	public void onClickGetDataBase(View v){
+//		final GlobalData global = ((GlobalData) getApplicationContext());
+//		NetworkMapDataSource networkMap = global.getDSNetworkMap();
+//		if (networkMap!=null){
+//		Toast.makeText(getApplication(),"TOAST", Toast.LENGTH_SHORT).show();
+//		Cursor c = networkMap.getTableCursor();
+//		c.moveToFirst();
+//		Toast.makeText(getApplication(), c.getString(0), Toast.LENGTH_SHORT).show();
+//		}else{
+//			Toast.makeText(getApplication(),"Map is null", Toast.LENGTH_SHORT).show();
+//		}
+//	}
+	
 	/**
 	 * Sets up test on a 1 MB file
 	 * 
@@ -63,6 +83,19 @@ public class MainActivity extends Activity {
 		download.execute(medium_file_url);
 	}
 
+	/**
+	 * Sets up test on a 512 MB file
+	 * 
+	 * @param v
+	 */
+	public void onClickLargeDownload(View v) {
+		// Setup file download and start monitoring throughput
+		mNetworkMonitor.StartMonitoring();
+		DownloadFileFromURL download = new DownloadFileFromURL();
+		download.setmNetworkMonitor(mNetworkMonitor);
+		download.execute(large_file_url);
+	}
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 

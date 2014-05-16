@@ -1,5 +1,4 @@
 package com.network.networkMonitor;
-
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
@@ -184,6 +183,7 @@ public class NetworkMonitor {
 		serviceData.putExtra("END_BYTES", endBytes);
 		serviceData.putExtra("LOCATION", locationOfMeasurement);
 		mContext.startService(serviceData);
+		
 		// Updates the start time to measure elapsed time between start and stop
 		startTime = System.currentTimeMillis();
 		// Updates total bytes received at the start measurement point to
