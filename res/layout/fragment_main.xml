@@ -8,15 +8,14 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.network.skynet.MainActivity$PlaceholderFragment" >
 
-
     <Button
         android:id="@+id/startSmallDownloadButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_marginTop="15dp"
-        android:text="@string/smallDownloadButton"
-        android:onClick="onClickSmallDownload" />
+        android:onClick="onClickSmallDownload"
+        android:text="@string/smallDownloadButton" />
 
     <Button
         android:id="@+id/button1"
@@ -27,5 +26,30 @@
         android:onClick="onClickMediumDownload"
         android:text="@string/mediumDownloadButton" />
 
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/button1"
+        android:orientation="vertical" >
+
+        <fragment
+            android:id="@+id/frag_list"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/phone_list_height"
+            class="com.network.wifidirect.DeviceListFragment" >
+
+            <!-- Preview: layout=@layout/row_devices -->
+        </fragment>
+
+        <fragment
+            android:id="@+id/frag_detail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            class="com.network.wifidirect.DeviceDetailFragment" >
+
+            <!-- Preview: layout=@layout/device_detail -->
+        </fragment>
+    </LinearLayout>
 
 </RelativeLayout>

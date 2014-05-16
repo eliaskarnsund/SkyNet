@@ -1,16 +1,18 @@
 package com.network.skynet;
 
-import com.network.networkMonitor.NetworkMonitor;
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.network.networkMonitor.NetworkMonitor;
+import com.network.wifidirect.WiFiDirectFragment;
 
 public class MainActivity extends Activity {
 	// App context
@@ -28,9 +30,10 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 		// Setup the NetworkMonitor
 		mNetworkMonitor = new NetworkMonitor(getApplication());
+
 		if (savedInstanceState == null) {
 			getFragmentManager().beginTransaction()
-					.add(R.id.container, new PlaceholderFragment()).commit();
+					.add(R.id.frag_main, new WiFiDirectFragment()).commit();
 		}
 	}
 
@@ -63,8 +66,8 @@ public class MainActivity extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.action_items, menu);
 		return true;
 	}
 
@@ -73,11 +76,12 @@ public class MainActivity extends Activity {
 		// Handle action bar item clicks here. The action bar will
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
+
+		WiFiDirectFragment fragment = (WiFiDirectFragment) getFragmentManager()
+				.findFragmentById(R.id.frag_main);
+		fragment.optionsSelected(item);
+
+		return true;
 	}
 
 	/**

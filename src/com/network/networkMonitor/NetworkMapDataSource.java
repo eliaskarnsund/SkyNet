@@ -1,7 +1,5 @@
 package com.network.networkMonitor;
 
-import com.network.networkMonitor.MySQLiteOpenHelper.table_bandwidth_map;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -9,11 +7,13 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.util.Log;
 
+import com.network.networkMonitor.MySQLiteOpenHelper.table_bandwidth_map;
+
 /**
  * This class managed the operations with the Database where the network
  * performance map is stored
  * 
- * @author Alberto García
+ * @author Alberto Garcï¿½a
  */
 public class NetworkMapDataSource {
 
@@ -120,9 +120,13 @@ public class NetworkMapDataSource {
 		// Set sql query with bandwidth formula => BW = s x bandwidth + (1-s) BW
 		// s=0.125
 		double s = 0.125;
-		String sql = "UPDATE bandwidth_map SET bandwidth= "
+		String sql = "UPDATE bandwidth_map SET bandwidth= ("
 				+ Float.toString(bandwidth)
-				+ "*"+s+")+((1-"+s+")*bandwidth) , n_Samples= n_Samples+1 , last_Sample = CURRENT_TIMESTAMP "
+				+ "*"
+				+ s
+				+ ")+((1-"
+				+ s
+				+ ")*bandwidth) , n_Samples= n_Samples+1 , last_Sample = CURRENT_TIMESTAMP "
 				+ "WHERE `utmZone`=? AND `utmBand`=? AND `utmEasting`=? AND `utmNorthing`=? ";
 		// Update the table
 		try {
