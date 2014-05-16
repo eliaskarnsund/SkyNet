@@ -1,20 +1,15 @@
 package com.network.skynet;
 
-import com.network.networkMonitor.GlobalData;
-import com.network.networkMonitor.NetworkMapDataSource;
 import com.network.networkMonitor.NetworkMonitor;
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 public class MainActivity extends Activity {
 	// App context
