@@ -44,7 +44,7 @@ class DownloadFileFromURL extends AsyncTask<String, String, String> {
 
 			// Output stream
 			OutputStream output = new FileOutputStream(Environment
-					.getExternalStorageDirectory().toString() + "/2011.kml");
+					.getExternalStorageDirectory().toString() + "/SkyNetTest.kml");
 
 			byte data[] = new byte[1024];
 
