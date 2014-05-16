@@ -252,8 +252,10 @@ public class DeviceDetailFragment extends Fragment implements
 				while ((line = r.readLine()) != null) {
 					total.append(line);
 				}
-
+				
+				// TODO
 				// JSONObject json = new JSONObject(total.toString());
+				
 
 				// TODO Hanterar bara en sträng
 				Log.d("NY", "mottaget " + total);
@@ -280,6 +282,7 @@ public class DeviceDetailFragment extends Fragment implements
 				Log.d("NY", "LOL");
 				statusText.setText("Mottaget: " + result);
 				// TODO Spara Result i databas
+				
 			}
 
 		}
