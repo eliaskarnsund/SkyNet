@@ -10,11 +10,15 @@
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
     <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:name="com.network.networkMonitor.GlobalData"
@@ -31,9 +35,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name="com.network.networkMonitor.ServiceNetworkMonitor"></service>
-        <service android:name="com.network.networkMonitor.NetworkMapDataAlignment"></service> 
-        <service android:name="com.network.networkMonitor.ServiceNetworkMap"></service>
+
+        <service android:name="com.network.networkMonitor.ServiceNetworkMonitor" >
+        </service>
+        <service android:name="com.network.networkMonitor.NetworkMapDataAlignment" >
+        </service>
+        <service android:name="com.network.networkMonitor.ServiceNetworkMap" >
+        </service>
+        <!-- Used for transferring files  after a successful connection -->
+        <service
+            android:name="com.network.wifidirect.FileTransferService"
+            android:enabled="true" />
     </application>
 
 </manifest>
