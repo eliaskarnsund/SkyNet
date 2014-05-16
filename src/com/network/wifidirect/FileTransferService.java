@@ -2,9 +2,7 @@
 
 package com.network.wifidirect;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.InetSocketAddress;
@@ -12,11 +10,13 @@ import java.net.Socket;
 import java.util.Random;
 
 import android.app.IntentService;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
+import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import android.widget.Toast;
+
+import com.network.networkMonitor.MySQLiteOpenHelper;
 
 /**
  * A service that process each file transfer request i.e Intent by opening a
@@ -49,7 +49,7 @@ public class FileTransferService extends IntentService {
 		Context context = getApplicationContext();
 		// Ändra intent?
 		if (intent.getAction().equals(ACTION_SEND_FILE)) {
-			String fileUri = intent.getExtras().getString(EXTRAS_FILE_PATH);
+			// String fileUri = intent.getExtras().getString(EXTRAS_FILE_PATH);
 			String host = intent.getExtras().getString(
 					EXTRAS_GROUP_OWNER_ADDRESS);
 			Socket socket = new Socket();
@@ -60,28 +60,29 @@ public class FileTransferService extends IntentService {
 				socket.bind(null);
 				socket.connect((new InetSocketAddress(host, port)),
 						SOCKET_TIMEOUT);
+				MySQLiteOpenHelper sl = new MySQLiteOpenHelper(
+						getApplicationContext());
+				SQLiteDatabase db = sl.getWritableDatabase();
+				// TODO
+				// String query = "select * from Student WHERE rownum = 2";
+				// Cursor cursor = database.rawQuery(query, null);
 
 				Log.d(WiFiDirectFragment.TAG,
 						"Client socket - " + socket.isConnected());
 				OutputStream stream = socket.getOutputStream();
 
-				ContentResolver cr = context.getContentResolver();
-				InputStream is = null;
-				try {
-					// TODO open inputstream from database
-					is = cr.openInputStream(Uri.parse(fileUri));
-				} catch (FileNotFoundException e) {
-					Log.d(WiFiDirectFragment.TAG, e.toString());
-				}
 				// DeviceDetailFragment.copyFile(is, stream);
 				// TODO SKICKA NÅGOT VETTIGT
-				Random rand = new Random();
+				Random rand = new Random(500);
 				PrintStream printStream = new PrintStream(stream);
 				printStream.print("Hej " + rand.nextInt());
 
 				Log.d(WiFiDirectFragment.TAG, "Client: Data written");
 			} catch (IOException e) {
 				Log.e(WiFiDirectFragment.TAG, e.getMessage());
+				Toast.makeText(getApplicationContext(), "Not connected",
+						Toast.LENGTH_SHORT).show();
+				Log.e("NY", "FEL");
 			} finally {
 				if (socket != null) {
 					if (socket.isConnected()) {

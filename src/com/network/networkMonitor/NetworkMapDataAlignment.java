@@ -23,6 +23,7 @@ import android.util.Log;
 public class NetworkMapDataAlignment extends IntentService {
 
 	private NetworkMapDataSource DSNetworkMap = null;
+	// public static final String DB_GET_ROW = "Row row";
 	private final String TAG = "NetworkMapDataAlignment";
 
 	public NetworkMapDataAlignment() {
@@ -32,6 +33,11 @@ public class NetworkMapDataAlignment extends IntentService {
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
+
+		// if (intent.getAction().equals(DB_GET_ROW)) {
+		//
+		// }
+
 		// Process data to be stored in our Network Map
 		Bundle extra = intent.getExtras();
 		long startTime = extra.getLong("START_TIME", 0);
@@ -71,7 +77,7 @@ public class NetworkMapDataAlignment extends IntentService {
 		// Available bandwidth in Kbps
 		float availableBW = (DifBytes * 8) / DifTime;
 		Log.d(TAG, "availableBW");
-		
+
 		Log.w(TAG,
 				"Time stamp:" + Long.toString(System.currentTimeMillis())
 						+ "|Location:" + MeasuredLocation.toString()

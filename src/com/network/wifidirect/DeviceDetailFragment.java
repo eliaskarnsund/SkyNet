@@ -27,7 +27,6 @@ import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.net.wifi.WpsInfo;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
@@ -112,7 +111,9 @@ public class DeviceDetailFragment extends Fragment implements
 						// TODO
 						Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
 						intent.setType("image/*");
-						startActivityForResult(intent, CHOOSE_FILE_RESULT_CODE);
+						// startActivityForResult(intent,
+						// CHOOSE_FILE_RESULT_CODE);
+						onActivityResult(1, 2, intent);
 					}
 				});
 
@@ -124,16 +125,16 @@ public class DeviceDetailFragment extends Fragment implements
 
 		// User has picked an image. Transfer it to group owner i.e peer using
 		// FileTransferService.
-		Uri uri = data.getData();
+		// Uri uri = data.getData();
 		TextView statusText = (TextView) mContentView
 				.findViewById(R.id.status_text);
-		statusText.setText("Sending: " + uri);
-		Log.d(WiFiDirectFragment.TAG, "Intent----------- " + uri);
+		statusText.setText("Sending: något");
+		Log.d(WiFiDirectFragment.TAG, "Intent----------- ");
 		Intent serviceIntent = new Intent(getActivity(),
 				FileTransferService.class);
 		serviceIntent.setAction(FileTransferService.ACTION_SEND_FILE);
-		serviceIntent.putExtra(FileTransferService.EXTRAS_FILE_PATH,
-				uri.toString());
+		// serviceIntent.putExtra(FileTransferService.EXTRAS_FILE_PATH,
+		// uri.toString());
 		serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_ADDRESS,
 				info.groupOwnerAddress.getHostAddress());
 		serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_PORT,
@@ -254,7 +255,7 @@ public class DeviceDetailFragment extends Fragment implements
 				}
 
 				// JSONObject json = new JSONObject(total.toString());
-
+				inputstream.close();
 				// TODO Hanterar bara en sträng
 				Log.d("NY", "mottaget " + total);
 				serverSocket.close();
