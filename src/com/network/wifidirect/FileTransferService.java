@@ -2,28 +2,23 @@
 
 package com.network.wifidirect;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.util.Random;
 
 import android.app.IntentService;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.network.networkMonitor.GlobalData;
-import com.network.networkMonitor.NetworkMapDataSource;
 import com.network.networkMonitor.MySQLiteOpenHelper;
+import com.network.networkMonitor.NetworkMapDataSource;
 
 /**
  * A service that process each file transfer request i.e Intent by opening a
@@ -78,17 +73,17 @@ public class FileTransferService extends IntentService {
 						"Client socket - " + socket.isConnected());
 				OutputStream stream = socket.getOutputStream();
 
-				ContentResolver cr = context.getContentResolver();
-				InputStream is = null;
-				try {
-					// TODO open inputstream from database
-					is = cr.openInputStream(Uri.parse(fileUri));
-				} catch (FileNotFoundException e) {
-					Log.d(WiFiDirectFragment.TAG, e.toString());
-				}
+//				ContentResolver cr = context.getContentResolver();
+//				InputStream is = null;
+//				try {
+//					// TODO open inputstream from database
+//					// is = cr.openInputStream(Uri.parse(fileUri));
+//				} catch (FileNotFoundException e) {
+//					Log.d(WiFiDirectFragment.TAG, e.toString());
+//				}
 				// DeviceDetailFragment.copyFile(is, stream);
 				// TODO SKICKA NÅGOT VETTIGT
-				Random rand = new Random(500);
+			//	Random rand = new Random(500);
 				PrintStream printStream = new PrintStream(stream);
 				final GlobalData global = ((GlobalData) getApplicationContext());
 				NetworkMapDataSource networkMap = global.getDSNetworkMap();
