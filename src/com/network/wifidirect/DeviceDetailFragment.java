@@ -278,7 +278,6 @@ public class DeviceDetailFragment extends Fragment implements
 		@Override
 		protected void onPostExecute(String result) {
 			if (result != null) {
-				Log.d("NY", "LOL");
 				statusText.setText("Mottaget: " + result);
 				// TODO Spara Result i databas
 			}
