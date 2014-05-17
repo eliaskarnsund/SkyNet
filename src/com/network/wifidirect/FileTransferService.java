@@ -10,8 +10,7 @@ import java.io.PrintStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.Random;
-import com.network.networkMonitor.GlobalData;
-import com.network.networkMonitor.NetworkMapDataSource;
+
 import android.app.IntentService;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -19,8 +18,9 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
+
+import com.network.networkMonitor.GlobalData;
+import com.network.networkMonitor.NetworkMapDataSource;
 
 /**
  * A service that process each file transfer request i.e Intent by opening a
@@ -81,8 +81,11 @@ public class FileTransferService extends IntentService {
 				// TODO SKICKA NÅGOT VETTIGT
 				Random rand = new Random();
 				PrintStream printStream = new PrintStream(stream);
-				Cursor cursor = getCursor();
-				cursor.moveToFirst();
+				final GlobalData global = ((GlobalData) getApplicationContext());
+				NetworkMapDataSource networkMap = global.getDSNetworkMap();
+				networkMap.open();
+					Cursor cursor = networkMap.getTableCursor();
+					cursor.moveToFirst();
 				int count = cursor.getCount();
 				String row;
 				//for (int i = 0; i < count;) {
@@ -98,6 +101,7 @@ public class FileTransferService extends IntentService {
 				//	i++;
 				//}
 				printStream.print(row);
+				networkMap.close();
 
 				Log.d(WiFiDirectFragment.TAG, "Client: Data written");
 			} catch (IOException e) {
