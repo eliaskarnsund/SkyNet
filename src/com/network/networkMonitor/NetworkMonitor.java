@@ -20,7 +20,7 @@ import android.widget.Toast;
  *      the data to the alignment module. If the download is cancelled the
  *      monitoring should be cancelled by calling {@code CancelMonitoring()}.
  * 
- * @author Alberto García
+ * @author Alberto Garcï¿½a
  * 
  */
 
@@ -29,7 +29,7 @@ public class NetworkMonitor {
 	/* Attributes */
 	// Debug attributes
 	private final String TAG = "NetworkMonitor";
-	private Context mContext;
+	private final Context mContext;
 	private String mProvider;
 	// Monitoring attributes
 	public static int NETWORK_MAP_ACCURACY = 10;
@@ -42,7 +42,7 @@ public class NetworkMonitor {
 
 	// Location attributes
 	private LocationManager locationManager = null;
-	private LocationListener locationListener;
+	private final LocationListener locationListener;
 
 	/**
 	 * Constructor for the class
@@ -135,7 +135,8 @@ public class NetworkMonitor {
 					locationListener);
 			locationOfMeasurement = new UTMLocation(x, NETWORK_MAP_ACCURACY);
 		} else {
-			Toast.makeText(mContext, "Locatoin is null", Toast.LENGTH_SHORT).show();
+			Toast.makeText(mContext, "Locatoin is null", Toast.LENGTH_SHORT)
+					.show();
 			CancelMonitoring();
 			Log.d(TAG, "Last known location is null.");
 			return;
@@ -154,7 +155,7 @@ public class NetworkMonitor {
 	 * alignment module
 	 */
 	public void StopMonitoring() {
-		if(locationOfMeasurement==null){
+		if (locationOfMeasurement == null) {
 			CancelMonitoring();
 			return;
 		}
@@ -204,6 +205,7 @@ public class NetworkMonitor {
 		endBytes = 0;
 		endTime = 0;
 		Log.d(TAG, "Monitorization has been canceled");
-		Toast.makeText(mContext, "Monitorization has been canceled", Toast.LENGTH_SHORT).show();
+		Toast.makeText(mContext, "Monitorization has been canceled",
+				Toast.LENGTH_SHORT).show();
 	}
 }

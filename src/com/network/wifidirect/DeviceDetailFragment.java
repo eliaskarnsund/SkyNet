@@ -112,7 +112,9 @@ public class DeviceDetailFragment extends Fragment implements
 						// TODO
 						Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
 						intent.setType("image/*");
-						startActivityForResult(intent, CHOOSE_FILE_RESULT_CODE);
+						// startActivityForResult(intent,
+						// CHOOSE_FILE_RESULT_CODE);
+						onActivityResult(1, 2, intent);
 					}
 				});
 
@@ -124,16 +126,16 @@ public class DeviceDetailFragment extends Fragment implements
 
 		// User has picked an image. Transfer it to group owner i.e peer using
 		// FileTransferService.
-		Uri uri = data.getData();
+		// Uri uri = data.getData();
 		TextView statusText = (TextView) mContentView
 				.findViewById(R.id.status_text);
-		statusText.setText("Sending: " + uri);
-		Log.d(WiFiDirectFragment.TAG, "Intent----------- " + uri);
+		statusText.setText("Sending: något");
+		Log.d(WiFiDirectFragment.TAG, "Intent----------- ");
 		Intent serviceIntent = new Intent(getActivity(),
 				FileTransferService.class);
 		serviceIntent.setAction(FileTransferService.ACTION_SEND_FILE);
-		serviceIntent.putExtra(FileTransferService.EXTRAS_FILE_PATH,
-				uri.toString());
+		// serviceIntent.putExtra(FileTransferService.EXTRAS_FILE_PATH,
+		// uri.toString());
 		serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_ADDRESS,
 				info.groupOwnerAddress.getHostAddress());
 		serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_PORT,
@@ -252,11 +254,9 @@ public class DeviceDetailFragment extends Fragment implements
 				while ((line = r.readLine()) != null) {
 					total.append(line);
 				}
-				
-				// TODO
-				// JSONObject json = new JSONObject(total.toString());
-				
 
+				// JSONObject json = new JSONObject(total.toString());
+				inputstream.close();
 				// TODO Hanterar bara en sträng
 				Log.d("NY", "mottaget " + total);
 				serverSocket.close();
@@ -282,7 +282,6 @@ public class DeviceDetailFragment extends Fragment implements
 				Log.d("NY", "LOL");
 				statusText.setText("Mottaget: " + result);
 				// TODO Spara Result i databas
-				
 			}
 
 		}

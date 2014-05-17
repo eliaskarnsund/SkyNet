@@ -17,10 +17,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.network.networkMonitor.GlobalData;
 import com.network.networkMonitor.NetworkMapDataSource;
+import com.network.networkMonitor.MySQLiteOpenHelper;
 
 /**
  * A service that process each file transfer request i.e Intent by opening a
@@ -53,7 +56,7 @@ public class FileTransferService extends IntentService {
 		Context context = getApplicationContext();
 		// Ändra intent?
 		if (intent.getAction().equals(ACTION_SEND_FILE)) {
-			String fileUri = intent.getExtras().getString(EXTRAS_FILE_PATH);
+			// String fileUri = intent.getExtras().getString(EXTRAS_FILE_PATH);
 			String host = intent.getExtras().getString(
 					EXTRAS_GROUP_OWNER_ADDRESS);
 			Socket socket = new Socket();
@@ -64,6 +67,12 @@ public class FileTransferService extends IntentService {
 				socket.bind(null);
 				socket.connect((new InetSocketAddress(host, port)),
 						SOCKET_TIMEOUT);
+				MySQLiteOpenHelper sl = new MySQLiteOpenHelper(
+						getApplicationContext());
+				SQLiteDatabase db = sl.getWritableDatabase();
+				// TODO
+				// String query = "select * from Student WHERE rownum = 2";
+				// Cursor cursor = database.rawQuery(query, null);
 
 				Log.d(WiFiDirectFragment.TAG,
 						"Client socket - " + socket.isConnected());
@@ -79,7 +88,7 @@ public class FileTransferService extends IntentService {
 				}
 				// DeviceDetailFragment.copyFile(is, stream);
 				// TODO SKICKA NÅGOT VETTIGT
-				Random rand = new Random();
+				Random rand = new Random(500);
 				PrintStream printStream = new PrintStream(stream);
 				final GlobalData global = ((GlobalData) getApplicationContext());
 				NetworkMapDataSource networkMap = global.getDSNetworkMap();
@@ -106,6 +115,9 @@ public class FileTransferService extends IntentService {
 				Log.d(WiFiDirectFragment.TAG, "Client: Data written");
 			} catch (IOException e) {
 				Log.e(WiFiDirectFragment.TAG, e.getMessage());
+				Toast.makeText(getApplicationContext(), "Not connected",
+						Toast.LENGTH_SHORT).show();
+				Log.e("NY", "FEL");
 			} finally {
 				if (socket != null) {
 					if (socket.isConnected()) {

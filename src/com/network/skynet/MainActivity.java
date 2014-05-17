@@ -1,10 +1,9 @@
 package com.network.skynet;
 
-import com.network.networkMonitor.NetworkMonitor;
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -12,9 +11,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.network.networkMonitor.NetworkMonitor;
 import com.network.wifidirect.WiFiDirectFragment;
 
 public class MainActivity extends Activity {
+	IntentFilter intentFilter = new IntentFilter();
+
 	// App context
 	final Context appContext = this;
 	// Monitor used to measure throughput
@@ -32,13 +35,13 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 		// Setup the NetworkMonitor
 		mNetworkMonitor = new NetworkMonitor(getApplication());
-		
+
 		if (savedInstanceState == null) {
 			getFragmentManager().beginTransaction()
 					.add(R.id.frag_main, new WiFiDirectFragment()).commit();
 		}
 	}
-	
+
 	/**
 	 * Sets up test on a 1 MB file
 	 * 
