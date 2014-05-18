@@ -23,11 +23,13 @@ import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.net.wifi.WpsInfo;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
@@ -41,6 +43,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.network.networkMonitor.GlobalData;
+import com.network.networkMonitor.NetworkMapDataSource;
 import com.network.skynet.R;
 import com.network.wifidirect.DeviceListFragment.DeviceActionListener;
 
@@ -167,7 +171,8 @@ public class DeviceDetailFragment extends Fragment implements
 		// socket.
 
 		if (info.groupFormed && info.isGroupOwner) {
-			new FileServerAsyncTask(getActivity(),
+			// TODO FEL Activity
+			new FileServerAsyncTask(getActivity().getApplicationContext(),
 					mContentView.findViewById(R.id.status_text)).execute();
 		} else if (info.groupFormed) {
 			// The other device acts as the client. In this case, we enable the
@@ -223,7 +228,7 @@ public class DeviceDetailFragment extends Fragment implements
 	 * the stream.
 	 */
 	public static class FileServerAsyncTask extends
-			AsyncTask<Void, Void, String> {
+			AsyncTask<Void, Void, JSONObject> {
 
 		private final Context context;
 		private final TextView statusText;
@@ -238,7 +243,7 @@ public class DeviceDetailFragment extends Fragment implements
 		}
 
 		@Override
-		protected String doInBackground(Void... params) {
+		protected JSONObject doInBackground(Void... params) {
 			try {
 				ServerSocket serverSocket = new ServerSocket(8988);
 				Log.d(WiFiDirectFragment.TAG, "Server: Socket opened");
@@ -254,21 +259,17 @@ public class DeviceDetailFragment extends Fragment implements
 				while ((line = r.readLine()) != null) {
 					total.append(line);
 				}
-
-				// JSONObject json = new JSONObject(total.toString());
+				Log.d("wifidirectdemo", total.toString());
+				JSONObject json = new JSONObject(total.toString());
 				inputstream.close();
 				// TODO Hanterar bara en sträng
 				Log.d("NY", "mottaget " + total);
 				serverSocket.close();
-				return total.toString();
-			} catch (IOException e) {
+				return json;
+			} catch (IOException | JSONException e) {
 				Log.e(WiFiDirectFragment.TAG, e.getMessage());
 				return null;
 			}
-			// catch (JSONException e) {
-			// Log.e(WiFiDirectFragment.TAG, e.getMessage());
-			// return null;
-			// }
 		}
 
 		/*
@@ -277,11 +278,18 @@ public class DeviceDetailFragment extends Fragment implements
 		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
 		 */
 		@Override
-		protected void onPostExecute(String result) {
+		protected void onPostExecute(JSONObject result) {
 			if (result != null) {
-				Log.d("NY", "LOL");
-				statusText.setText("Mottaget: " + result);
+
 				// TODO Spara Result i databas
+
+				final GlobalData global = ((GlobalData) context);
+				NetworkMapDataSource networkMap = global.getDSNetworkMap();
+				networkMap.open();
+				// networkMap.insertBWSample(new , bandwidth)
+				networkMap.insertBWSample(result);
+				statusText.setText("La till: " + result);
+
 			}
 
 		}

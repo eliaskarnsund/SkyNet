@@ -8,16 +8,16 @@ import java.io.PrintStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.IntentService;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.network.networkMonitor.GlobalData;
-import com.network.networkMonitor.MySQLiteOpenHelper;
 import com.network.networkMonitor.NetworkMapDataSource;
 
 /**
@@ -48,7 +48,6 @@ public class FileTransferService extends IntentService {
 	@Override
 	protected void onHandleIntent(Intent intent) {
 
-		Context context = getApplicationContext();
 		// Ändra intent?
 		if (intent.getAction().equals(ACTION_SEND_FILE)) {
 			// String fileUri = intent.getExtras().getString(EXTRAS_FILE_PATH);
@@ -62,9 +61,7 @@ public class FileTransferService extends IntentService {
 				socket.bind(null);
 				socket.connect((new InetSocketAddress(host, port)),
 						SOCKET_TIMEOUT);
-				MySQLiteOpenHelper sl = new MySQLiteOpenHelper(
-						getApplicationContext());
-				SQLiteDatabase db = sl.getWritableDatabase();
+
 				// TODO
 				// String query = "select * from Student WHERE rownum = 2";
 				// Cursor cursor = database.rawQuery(query, null);
@@ -73,39 +70,10 @@ public class FileTransferService extends IntentService {
 						"Client socket - " + socket.isConnected());
 				OutputStream stream = socket.getOutputStream();
 
-//				ContentResolver cr = context.getContentResolver();
-//				InputStream is = null;
-//				try {
-//					// TODO open inputstream from database
-//					// is = cr.openInputStream(Uri.parse(fileUri));
-//				} catch (FileNotFoundException e) {
-//					Log.d(WiFiDirectFragment.TAG, e.toString());
-//				}
-				// DeviceDetailFragment.copyFile(is, stream);
-				// TODO SKICKA NÅGOT VETTIGT
-			//	Random rand = new Random(500);
 				PrintStream printStream = new PrintStream(stream);
-				final GlobalData global = ((GlobalData) getApplicationContext());
-				NetworkMapDataSource networkMap = global.getDSNetworkMap();
-				networkMap.open();
-					Cursor cursor = networkMap.getTableCursor();
-					cursor.moveToFirst();
-				int count = cursor.getCount();
-				String row;
-				//for (int i = 0; i < count;) {
-					row = "ID = " + cursor.getString(0) + ", UTM_ZONE = "
-							+ cursor.getString(1) + ", UTM_BAND = "
-							+ cursor.getString(2) + ", UTM_EASTING = "
-							+ cursor.getString(3) + ", UTM_NORTHING = "
-							+ cursor.getString(4) + ", BANDWIDTH = "
-							+ cursor.getString(5) + ", N_SAMPLES = "
-							+ cursor.getString(6) + ", LAST_SAMPLE = "
-							+ cursor.getString(7);
-					cursor.moveToNext();
-				//	i++;
-				//}
+
+				String row = getRow();
 				printStream.print(row);
-				networkMap.close();
 
 				Log.d(WiFiDirectFragment.TAG, "Client: Data written");
 			} catch (IOException e) {
@@ -113,6 +81,9 @@ public class FileTransferService extends IntentService {
 				Toast.makeText(getApplicationContext(), "Not connected",
 						Toast.LENGTH_SHORT).show();
 				Log.e("NY", "FEL");
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			} finally {
 				if (socket != null) {
 					if (socket.isConnected()) {
@@ -127,6 +98,40 @@ public class FileTransferService extends IntentService {
 			}
 
 		}
+	}
+
+	private String getRow() throws JSONException {
+		final GlobalData global = ((GlobalData) getApplicationContext());
+		NetworkMapDataSource networkMap = global.getDSNetworkMap();
+		networkMap.open();
+		Cursor cursor = networkMap.getTableCursor();
+		cursor.moveToFirst();
+		int count = cursor.getCount();
+		String row;
+		JSONObject jsonRow = new JSONObject();
+		// for (int i = 0; i < count;) {
+		jsonRow.put("ID", cursor.getString(0));
+		jsonRow.put("UTM_ZONE", cursor.getString(1));
+		jsonRow.put("UTM_BAND", cursor.getString(2));
+		jsonRow.put("UTM_EASTING", cursor.getString(3));
+		jsonRow.put("UTM_NORTHING", cursor.getString(4));
+		jsonRow.put("BANDWIDTH", cursor.getString(5));
+		jsonRow.put("N_SAMPLES", cursor.getString(6));
+		jsonRow.put("LAST_SAMPLE", cursor.getString(7));
+		// row = "ID = " + cursor.getString(0) + ", UTM_ZONE = "
+		// + cursor.getString(1) + ", UTM_BAND = " + cursor.getString(2)
+		// + ", UTM_EASTING = " + cursor.getString(3)
+		// + ", UTM_NORTHING = " + cursor.getString(4) + ", BANDWIDTH = "
+		// + cursor.getString(5) + ", N_SAMPLES = " + cursor.getString(6)
+		// + ", LAST_SAMPLE = " + cursor.getString(7);
+		cursor.moveToNext();
+		// i++;
+		// }
+
+		networkMap.close();
+		return jsonRow.toString();
+		// return row;
+
 	}
 
 	public Cursor getCursor() {

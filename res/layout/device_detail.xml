@@ -54,13 +54,13 @@
         android:orientation="vertical"
         android:layout_gravity="bottom"
         android:layout_height="37dp"
-        android:layout_marginBottom="3dp"
+        android:layout_marginBottom="15dp"
         android:background="@android:color/background_light">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:layout_margin="5dp"
+            android:layout_margin="1dp"
             android:textColor="@android:color/black"
             android:id="@+id/status_text">
         </TextView>

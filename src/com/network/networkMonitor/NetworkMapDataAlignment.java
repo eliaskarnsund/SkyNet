@@ -30,7 +30,13 @@ public class NetworkMapDataAlignment extends IntentService {
 		super("NetworkMapDataAlignment");
 		DSNetworkMap = new NetworkMapDataSource(this);
 	}
-	
+
+	@Override
+	public void onCreate() {
+		super.onCreate();
+		setGlobal();
+	}
+
 	@Override
 	protected void onHandleIntent(Intent intent) {
 
@@ -45,10 +51,14 @@ public class NetworkMapDataAlignment extends IntentService {
 		long startBytes = extra.getLong("START_BYTES", 0);
 		long endBytes = extra.getLong("END_BYTES", 0);
 		UTMLocation locationOfMeasurement = extra.getParcelable("LOCATION");
-		final GlobalData global = ((GlobalData) getApplicationContext());
-		global.setDSNetworkMap(DSNetworkMap);
+		// setGlobal();
 		ProcessData(startTime, endTime, startBytes, endBytes,
 				locationOfMeasurement);
+	}
+
+	public void setGlobal() {
+		final GlobalData global = ((GlobalData) getApplicationContext());
+		global.setDSNetworkMap(DSNetworkMap);
 	}
 
 	/**

@@ -80,7 +80,7 @@ public class MainActivity extends Activity {
 		download.setmNetworkMonitor(mNetworkMonitor);
 		download.execute(large_file_url);
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 
