@@ -9,7 +9,7 @@ import android.util.Log;
  * This class represent a Location defined by UTM coordinates and implements the
  * methods necessary to handle this locations
  * 
- * @author Alberto García
+ * @author Alberto Garcï¿½a
  */
 public class UTMLocation implements Parcelable {
 
@@ -45,6 +45,18 @@ public class UTMLocation implements Parcelable {
 	// Constructor copy
 	public UTMLocation(UTMLocation oLocation) {
 		copy(oLocation);
+	}
+
+	// Constructor copy
+	public UTMLocation(String zone, String band, String north, String east) {
+
+		setZone(Integer.parseInt(zone));
+		setBand(band);
+		setUTMe(Integer.parseInt(east));
+		setUTMn(Integer.parseInt(north));
+		// Copy granularity the last in order to avoid affect the UTMe and UTMn
+		// dividing it again by the granularity
+		// setGranularity(oLocation.getGranularity());
 	}
 
 	/*

@@ -45,6 +45,7 @@ import android.widget.TextView;
 
 import com.network.networkMonitor.GlobalData;
 import com.network.networkMonitor.NetworkMapDataSource;
+import com.network.networkMonitor.UTMLocation;
 import com.network.skynet.R;
 import com.network.wifidirect.DeviceListFragment.DeviceActionListener;
 
@@ -262,7 +263,7 @@ public class DeviceDetailFragment extends Fragment implements
 				Log.d("wifidirectdemo", total.toString());
 				JSONObject json = new JSONObject(total.toString());
 				inputstream.close();
-				// TODO Hanterar bara en sträng
+
 				Log.d("NY", "mottaget " + total);
 				serverSocket.close();
 				return json;
@@ -280,14 +281,30 @@ public class DeviceDetailFragment extends Fragment implements
 		@Override
 		protected void onPostExecute(JSONObject result) {
 			if (result != null) {
-
-				// TODO Spara Result i databas
+				UTMLocation loc = null;
+				Float bandwidth = null;
+				try {
+					loc = new UTMLocation((String) result.get("UTM_ZONE"),
+							(String) result.get("UTM_BAND"),
+							(String) result.get("UTM_NORTHING"),
+							(String) result.get("UTM_EASTING"));
+					bandwidth = Float.parseFloat((String) result
+							.get("BANDWIDTH"));
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 
 				final GlobalData global = ((GlobalData) context);
 				NetworkMapDataSource networkMap = global.getDSNetworkMap();
 				networkMap.open();
-				// networkMap.insertBWSample(new , bandwidth)
-				networkMap.insertBWSample(result);
+				if (!networkMap.existsBWSample(loc)) {
+					Log.d(WiFiDirectFragment.TAG, "Finns inte i databas");
+					networkMap.insertBWSample(result);
+				} else {
+					Log.d(WiFiDirectFragment.TAG, "Finns redan i databas");
+					networkMap.updateBWSample(loc, bandwidth);
+				}
 				statusText.setText("La till: " + result);
 
 			}
