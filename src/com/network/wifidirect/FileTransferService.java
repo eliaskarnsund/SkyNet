@@ -8,6 +8,7 @@ import java.io.PrintStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -107,29 +108,27 @@ public class FileTransferService extends IntentService {
 		Cursor cursor = networkMap.getTableCursor();
 		cursor.moveToFirst();
 		int count = cursor.getCount();
-		String row;
+		// String row;
 		JSONObject jsonRow = new JSONObject();
-		// for (int i = 0; i < count;) {
-		jsonRow.put("ID", cursor.getString(0));
-		jsonRow.put("UTM_ZONE", cursor.getString(1));
-		jsonRow.put("UTM_BAND", cursor.getString(2));
-		jsonRow.put("UTM_EASTING", cursor.getString(3));
-		jsonRow.put("UTM_NORTHING", cursor.getString(4));
-		jsonRow.put("BANDWIDTH", cursor.getString(5));
-		jsonRow.put("N_SAMPLES", cursor.getString(6));
-		jsonRow.put("LAST_SAMPLE", cursor.getString(7));
-		// row = "ID = " + cursor.getString(0) + ", UTM_ZONE = "
-		// + cursor.getString(1) + ", UTM_BAND = " + cursor.getString(2)
-		// + ", UTM_EASTING = " + cursor.getString(3)
-		// + ", UTM_NORTHING = " + cursor.getString(4) + ", BANDWIDTH = "
-		// + cursor.getString(5) + ", N_SAMPLES = " + cursor.getString(6)
-		// + ", LAST_SAMPLE = " + cursor.getString(7);
-		cursor.moveToNext();
-		// i++;
-		// }
+		JSONArray table = new JSONArray();
+		for (int i = 1; i < count;) {
+			jsonRow.put("ID", cursor.getString(0));
+			jsonRow.put("UTM_ZONE", cursor.getString(1));
+			jsonRow.put("UTM_BAND", cursor.getString(2));
+			jsonRow.put("UTM_EASTING", cursor.getString(3));
+			jsonRow.put("UTM_NORTHING", cursor.getString(4));
+			jsonRow.put("BANDWIDTH", cursor.getString(5));
+			jsonRow.put("N_SAMPLES", cursor.getString(6));
+			jsonRow.put("LAST_SAMPLE", cursor.getString(7));
+
+			cursor.moveToNext();
+			table.put(jsonRow);
+			// table[i - 1].put(jsonRow);
+			i++;
+		}
 
 		networkMap.close();
-		return jsonRow.toString();
+		return table.toString();
 		// return row;
 
 	}

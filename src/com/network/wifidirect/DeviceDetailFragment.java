@@ -23,6 +23,7 @@ import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -229,7 +230,7 @@ public class DeviceDetailFragment extends Fragment implements
 	 * the stream.
 	 */
 	public static class FileServerAsyncTask extends
-			AsyncTask<Void, Void, JSONObject> {
+			AsyncTask<Void, Void, JSONArray> {
 
 		private final Context context;
 		private final TextView statusText;
@@ -244,7 +245,7 @@ public class DeviceDetailFragment extends Fragment implements
 		}
 
 		@Override
-		protected JSONObject doInBackground(Void... params) {
+		protected JSONArray doInBackground(Void... params) {
 			try {
 				ServerSocket serverSocket = new ServerSocket(8988);
 				Log.d(WiFiDirectFragment.TAG, "Server: Socket opened");
@@ -261,12 +262,12 @@ public class DeviceDetailFragment extends Fragment implements
 					total.append(line);
 				}
 				Log.d("wifidirectdemo", total.toString());
-				JSONObject json = new JSONObject(total.toString());
+				JSONArray table = new JSONArray(total.toString());
 				inputstream.close();
 
 				Log.d("NY", "mottaget " + total);
 				serverSocket.close();
-				return json;
+				return table;
 			} catch (IOException | JSONException e) {
 				Log.e(WiFiDirectFragment.TAG, e.getMessage());
 				return null;
@@ -279,33 +280,46 @@ public class DeviceDetailFragment extends Fragment implements
 		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
 		 */
 		@Override
-		protected void onPostExecute(JSONObject result) {
-			if (result != null) {
+		protected void onPostExecute(JSONArray table) {
+			if (table != null) {
+
 				UTMLocation loc = null;
 				Float bandwidth = null;
+				JSONObject result = null;
+
+				final GlobalData global = ((GlobalData) context);
+				NetworkMapDataSource networkMap = global.getDSNetworkMap();
+				networkMap.open();
 				try {
-					loc = new UTMLocation((String) result.get("UTM_ZONE"),
-							(String) result.get("UTM_BAND"),
-							(String) result.get("UTM_NORTHING"),
-							(String) result.get("UTM_EASTING"));
-					bandwidth = Float.parseFloat((String) result
-							.get("BANDWIDTH"));
+					for (int i = 0; i < table.length(); i++) {
+
+						result = new JSONObject(table.get(i).toString());
+						if (table.get(i) == null) {
+							break;
+						}
+						loc = new UTMLocation((String) result.get("UTM_ZONE"),
+								(String) result.get("UTM_BAND"),
+								(String) result.get("UTM_NORTHING"),
+								(String) result.get("UTM_EASTING"));
+						bandwidth = Float.parseFloat((String) result
+								.get("BANDWIDTH"));
+						if (!networkMap.existsBWSample(loc)) {
+							Log.d(WiFiDirectFragment.TAG,
+									"Finns inte i databas");
+							networkMap.insertBWSample(result);
+						} else {
+							Log.d(WiFiDirectFragment.TAG,
+									"Finns redan i databas");
+							networkMap.updateBWSample(loc, bandwidth);
+						}
+					}
+
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 
-				final GlobalData global = ((GlobalData) context);
-				NetworkMapDataSource networkMap = global.getDSNetworkMap();
-				networkMap.open();
-				if (!networkMap.existsBWSample(loc)) {
-					Log.d(WiFiDirectFragment.TAG, "Finns inte i databas");
-					networkMap.insertBWSample(result);
-				} else {
-					Log.d(WiFiDirectFragment.TAG, "Finns redan i databas");
-					networkMap.updateBWSample(loc, bandwidth);
-				}
-				statusText.setText("La till: " + result);
+				statusText.setText("La till: " + table.length() + " objekt");
 
 			}
 

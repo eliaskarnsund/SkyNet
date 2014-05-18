@@ -112,6 +112,7 @@ public class NetworkMonitor {
 			}
 
 		};
+
 	}
 
 	/**
@@ -129,6 +130,12 @@ public class NetworkMonitor {
 
 		// Store current location in UTM coordinates
 		Location x = locationManager.getLastKnownLocation(mProvider);
+		// if gps Location is null, network location is used
+		if (x == null) {
+			Log.d(TAG, "No gps-position, network provider used");
+			x = locationManager
+					.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+		}
 		if (x != null) {
 			// Register the listener with the Location Manager to receive
 			// location updates
@@ -136,7 +143,7 @@ public class NetworkMonitor {
 					locationListener);
 			locationOfMeasurement = new UTMLocation(x, NETWORK_MAP_ACCURACY);
 		} else {
-			Toast.makeText(mContext, "Locatoin is null", Toast.LENGTH_SHORT)
+			Toast.makeText(mContext, "Location is null", Toast.LENGTH_SHORT)
 					.show();
 			CancelMonitoring();
 			Log.d(TAG, "Last known location is null.");

@@ -50,7 +50,7 @@ import com.network.wifidirect.DeviceListFragment.DeviceActionListener;
 public class WiFiDirectFragment extends Fragment implements ChannelListener,
 		DeviceActionListener {
 
-	public static final String TAG = "wifidirectdemo";
+	public static final String TAG = "wifidirect";
 	private WifiP2pManager manager;
 	private boolean isWifiP2pEnabled = false;
 	private boolean retryChannel = false;
