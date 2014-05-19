@@ -139,7 +139,7 @@ public class NetworkMonitor {
 		if (x != null) {
 			// Register the listener with the Location Manager to receive
 			// location updates
-			locationManager.requestLocationUpdates(mProvider, 2000, 5,
+			locationManager.requestLocationUpdates(mProvider, 2000, 0,
 					locationListener);
 			locationOfMeasurement = new UTMLocation(x, NETWORK_MAP_ACCURACY);
 		} else {

@@ -23,6 +23,7 @@ public class NetworkMapDataSource {
 	private final String TAG = "NetworkMapDataSource";
 	private SQLiteDatabase db;
 	private MySQLiteOpenHelper dbHelper = null;
+	Context context;
 
 	public NetworkMapDataSource(Context context) {
 		dbHelper = new MySQLiteOpenHelper(context);

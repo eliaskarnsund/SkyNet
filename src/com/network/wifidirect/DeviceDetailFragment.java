@@ -303,10 +303,11 @@ public class DeviceDetailFragment extends Fragment implements
 								(String) result.get("UTM_EASTING"));
 						bandwidth = Float.parseFloat((String) result
 								.get("BANDWIDTH"));
+						networkMap.insertBWSample(result);
 						if (!networkMap.existsBWSample(loc)) {
 							Log.d(WiFiDirectFragment.TAG,
 									"Finns inte i databas");
-							networkMap.insertBWSample(result);
+
 						} else {
 							Log.d(WiFiDirectFragment.TAG,
 									"Finns redan i databas");
@@ -319,7 +320,8 @@ public class DeviceDetailFragment extends Fragment implements
 					e.printStackTrace();
 				}
 
-				statusText.setText("La till: " + table.length() + " objekt");
+				statusText
+						.setText("Uppdaterade: " + table.length() + " objekt");
 
 			}
 

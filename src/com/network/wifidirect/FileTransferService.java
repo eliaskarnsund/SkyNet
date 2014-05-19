@@ -109,9 +109,10 @@ public class FileTransferService extends IntentService {
 		cursor.moveToFirst();
 		int count = cursor.getCount();
 		// String row;
-		JSONObject jsonRow = new JSONObject();
+
 		JSONArray table = new JSONArray();
-		for (int i = 1; i < count;) {
+		for (int i = 0; i < count; i++) {
+			JSONObject jsonRow = new JSONObject();
 			jsonRow.put("ID", cursor.getString(0));
 			jsonRow.put("UTM_ZONE", cursor.getString(1));
 			jsonRow.put("UTM_BAND", cursor.getString(2));
@@ -123,8 +124,8 @@ public class FileTransferService extends IntentService {
 
 			cursor.moveToNext();
 			table.put(jsonRow);
+			jsonRow = null;
 			// table[i - 1].put(jsonRow);
-			i++;
 		}
 
 		networkMap.close();

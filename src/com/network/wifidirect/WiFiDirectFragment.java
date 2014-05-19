@@ -183,6 +183,7 @@ public class WiFiDirectFragment extends Fragment implements ChannelListener,
 
 	@Override
 	public void connect(WifiP2pConfig config) {
+		config.groupOwnerIntent = 15;
 		manager.connect(channel, config, new ActionListener() {
 
 			@Override
